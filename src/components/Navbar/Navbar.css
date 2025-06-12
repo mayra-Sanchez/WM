@@ -1,0 +1,150 @@
+/* General */
+/* Top bar animada */
+.top-bar {
+  background-color: #000;
+  color: #fff;
+  text-align: center;
+  font-size: 0.8rem;
+  padding: 5px;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.03);
+  }
+}
+
+/* Menú móvil fondo oscuro desenfocado */
+.mobile-menu-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 15, 15, 0.7);
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+}
+
+/* Menú deslizable desde la derecha */
+.mobile-menu {
+  background-color: #111;
+  width: 80%;
+  max-width: 300px;
+  height: 100%;
+  padding: 40px 20px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  list-style: none;
+  font-size: 1.2rem;
+  color: #fff;
+  z-index: 1001;
+}
+
+.mobile-menu li {
+  border-bottom: 1px solid #333;
+  padding-bottom: 10px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.mobile-menu li:hover {
+  color: #ff0000;
+}
+
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  padding: 10px 20px;
+  position: relative;
+}
+
+.navbar-logo img {
+  height: 40px;
+}
+
+.navbar-menu {
+  list-style: none;
+  display: flex;
+  gap: 20px;
+  font-weight: bold;
+  color: #fff;
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-menu li {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.navbar-menu li:hover {
+  color: #ff0000;
+}
+
+.navbar-icons {
+  display: flex;
+  gap: 15px;
+  color: #fff;
+}
+
+.icon {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.icon:hover {
+  transform: scale(1.2);
+}
+
+.hamburger {
+  display: none;
+  color: #fff;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+/* Desktop */
+.desktop {
+  display: flex;
+}
+
+/* Mobile */
+.mobile {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  width: 80%;
+  background-color: #111;
+  padding: 20px;
+  z-index: 1000;
+}
+
+@media (max-width: 768px) {
+  .desktop {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .mobile {
+    display: flex;
+  }
+}
