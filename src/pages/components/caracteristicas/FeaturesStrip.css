@@ -1,0 +1,26 @@
+.features-strip {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 2rem 1rem;
+    background-color: white;
+    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+    gap: 2rem;
+  }
+  
+  .feature-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    max-width: 220px;
+  }
+  
+  .feature-item p {
+    margin-top: 0.5rem;
+    font-size: 0.95rem;
+    color: #111;
+  }
+  

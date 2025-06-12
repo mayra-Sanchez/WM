@@ -1,0 +1,167 @@
+/* Fondo oscuro centrado tipo overlay */
+.auth-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(10, 10, 10, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100;
+    padding: 1rem;
+  }
+  
+  /* Modal centrado */
+  .auth-modal {
+    background: #1e1e1e;
+    border-radius: 1.5rem;
+    padding: 2rem;
+    width: 100%;
+    max-width: 420px;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
+    position: relative;
+    animation: fadeIn 0.4s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(15px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Botón cerrar */
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  
+  .close-btn:hover {
+    color: white;
+  }
+  
+  /* Tabs de login/registro */
+  .auth-tabs {
+    display: flex;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+  }
+  
+  .auth-tab {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 0.75rem;
+    background-color: #2b2b2b;
+    color: #bbb;
+    border: 1px solid transparent;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: center;
+    transition: all 0.3s ease;
+  }
+  
+  .auth-tab:hover {
+    background-color: #333;
+    color: #eee;
+  }
+  
+  .auth-tab.active {
+    background-color: #e63946;
+    color: white;
+    border-color: #e63946;
+    font-weight: bold;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  /* Inputs y selects */
+  form input,
+  form select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 0.75rem;
+    background-color: #2a2a2a;
+    color: white;
+    border: none;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease;
+  }
+  
+  form input:focus,
+  form select:focus {
+    box-shadow: 0 0 0 2px #e63946;
+    outline: none;
+  }
+  
+  form input::placeholder {
+    color: #888;
+  }
+  
+  /* Botón principal */
+  form button {
+    width: 100%;
+    padding: 0.75rem;
+    background-color: #e63946;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  form button:hover {
+    background-color: #d62828;
+  }
+  
+  /* Wrapper para inputs con ojito */
+  .input-wrapper {
+    position: relative;
+    margin-bottom: 1rem;
+  }
+  
+  .input-wrapper input {
+    padding-right: 2.5rem; /* espacio para el icono */
+    margin-bottom: 0;
+  }
+  
+  /* Icono del ojito */
+  .eye-icon {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #ccc;
+    font-size: 1.2rem;
+  }
+  
+  .eye-icon:hover {
+    color: #e63946;
+  }
+  
+  .disabled-button {
+    background-color: #aaa !important;
+    cursor: not-allowed !important;
+    pointer-events: none;
+  }
+  

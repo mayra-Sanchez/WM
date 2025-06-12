@@ -1,0 +1,36 @@
+.admin-tabs {
+    width: 200px;
+    background-color: #27002f;
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+    gap: 10px;
+    height: 100vh;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  }
+  
+  .admin-tab {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.3s ease, transform 0.2s ease;
+    font-size: 16px;
+  }
+  
+  .admin-tab:hover {
+    background-color: #5c1c49;
+    transform: translateX(5px);
+  }
+  
+  .admin-tab.active {
+    background-color: #993f6b;
+    font-weight: bold;
+  }
+  
+  .tab-icon {
+    font-size: 18px;
+  }
+  
