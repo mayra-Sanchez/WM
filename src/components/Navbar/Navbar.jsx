@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUser,
@@ -10,6 +9,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
 import AuthLayout from "../Auth/AuthLayout/AuthLayout";
+import { getCategorias } from "../../services/products"; 
 import "./Navbar.css";
 import logo from "../../assets/logo_wm.png";
 
@@ -25,8 +25,8 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/categorias");
-        setCategorias(response.data);
+        const data = await getCategorias(); // ✅ Usamos el servicio
+        setCategorias(data);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
       }
@@ -41,10 +41,8 @@ const Navbar = () => {
   };
 
   const toggleAuthModal = () => {
-    // Cierra el menú móvil si está abierto
     if (menuOpen) setMenuOpen(false);
-    // Alterna la visibilidad del modal
-    setShowAuthModal(prev => !prev);
+    setShowAuthModal((prev) => !prev);
   };
 
   return (
@@ -58,12 +56,10 @@ const Navbar = () => {
           <img src={logo} alt="Logo WM" />
         </div>
 
-        {/* Ícono hamburguesa (visible solo en móvil) */}
         <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
         </div>
 
-        {/* Menú principal */}
         <ul className="navbar-menu desktop">
           <motion.li whileHover={{ scale: 1.1 }}>INICIO</motion.li>
           {categorias.map((cat) => (
@@ -73,7 +69,6 @@ const Navbar = () => {
           ))}
         </ul>
 
-        {/* Iconos */}
         <div className="navbar-icons">
           {user ? (
             <div className="user-info">
@@ -94,7 +89,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* Menú móvil */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -123,7 +117,6 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* Modal de Login/Registro */}
       <AnimatePresence>
         {showAuthModal && (
           <motion.div
