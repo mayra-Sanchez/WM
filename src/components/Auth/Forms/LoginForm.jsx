@@ -3,8 +3,12 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import "../AuthLayout/AuthLayout.css";
+import { loginUser } from "../../../api/Auth";
+import { useNavigate } from "react-router-dom";
 
 export function LoginForm() {
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -14,22 +18,39 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
 
-  const onSubmit = (data) => {
-    // Simulación
-    if (data.email === "admin@example.com" && data.password === "123456") {
+  const onSubmit = async (data) => {
+
+    try {
+      const res = await loginUser(data);
+      const { token, user } = res.data;
+
+      localStorage.setItem("token", token);
+
+      console.log(res.data);
+
       Swal.fire({
         icon: "success",
         title: "¡Bienvenido!",
-        text: "Has iniciado sesión correctamente.",
+        text: `Hola ${user.name || user.email}, has iniciado sesión correctamente.`,
         confirmButtonColor: "#e63946",
       });
-    } else {
+      
+      setTimeout(() => {
+        if (user.role === "admin") {
+          navigate("/admin/");
+        } else {
+          navigate("/");
+        }
+      })
+
+    } catch (error) {
       Swal.fire({
         icon: "error",
         title: "Error de autenticación",
-        text: "Correo o contraseña incorrectos.",
+        text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
         confirmButtonColor: "#e63946",
       });
+
     }
   };
 
