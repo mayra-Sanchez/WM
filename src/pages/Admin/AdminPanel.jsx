@@ -6,6 +6,7 @@ import UserManagement from '../../components/Admin/UserManagement';
 import ProductManagement from '../../components/Admin/ProductManagement';
 import Reports from '../../components/Admin/Reports';
 import './AdminPanel.css';
+import Categories from '../../components/Admin/Categories';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -27,6 +28,7 @@ const AdminPanel = () => {
         </h2>
         <div className="admin-content">
           {activeTab === 'users' && <UserManagement />}
+          {activeTab === 'categories' && <Categories />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'reports' && <Reports />}
         </div>

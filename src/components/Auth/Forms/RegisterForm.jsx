@@ -3,6 +3,7 @@ import { useState } from "react";
 import Swal from "sweetalert2";
 import { Eye, EyeOff } from "lucide-react";
 import "../AuthLayout/AuthLayout.css";
+import { registerUser } from "../../../api/Auth";
 
 export function RegisterForm() {
   const {
@@ -14,29 +15,40 @@ export function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const togglePassword = () => setShowPassword(!showPassword);
 
-  const onSubmit = (data) => {
+const onSubmit = async (data) => {
+  try {
+    const response = await registerUser(data);
     Swal.fire({
       icon: "success",
       title: "¡Registro exitoso!",
       text: "Tu cuenta ha sido creada.",
       confirmButtonColor: "#e63946",
     });
+    console.log("Respuesta del servidor:", response.data);
+  } catch (error) {
+    console.error("Error al registrar:", error.response?.data || error.message);
+    Swal.fire({
+      icon: "error",
+      title: "Error al registrar",
+      text: error.response?.data?.detail || "Ocurrió un error inesperado.",
+      confirmButtonColor: "#e63946",
+    });
+  }
+};
 
-    console.log("Register Data", data);
-  };
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input
-        {...register("firstName", { required: true })}
+        {...register("name", { required: true })}
         placeholder="Nombre"
       />
       <input
-        {...register("lastName", { required: true })}
+        {...register("last_name", { required: true })}
         placeholder="Apellido"
       />
       <input
-        {...register("phone", { required: true })}
+        {...register("phone_number", { required: true })}
         placeholder="Teléfono"
       />
       <input
@@ -61,7 +73,7 @@ export function RegisterForm() {
       <select {...register("role", { required: true })}>
         <option value="">Selecciona un rol</option>
         <option value="admin">Administrador</option>
-        <option value="client">Cliente</option>
+        <option value="cliente">Cliente</option>
       </select>
 
       {Object.keys(errors).length > 0 && (
