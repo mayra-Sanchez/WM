@@ -4,7 +4,7 @@
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(18, 18, 18, 0.8);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -12,13 +12,14 @@
 }
 
 .category-modal-content {
-  background-color: white;
+  background-color: #1F1F1F; 
   padding: 24px;
-  border-radius: 10px;
+  border-radius: 12px;
   width: 100%;
   max-width: 500px;
   position: relative;
-  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.6);
+  color: #F1F1F1; 
 }
 
 .modal-close {
@@ -29,4 +30,10 @@
   background: none;
   font-size: 20px;
   cursor: pointer;
+  color: #B0B0B0;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: #E63946; 
 }

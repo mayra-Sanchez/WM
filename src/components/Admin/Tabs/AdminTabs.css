@@ -1,36 +1,44 @@
 .admin-tabs {
-    width: 200px;
-    background-color: #27002f;
-    display: flex;
-    flex-direction: column;
-    padding-top: 20px;
-    gap: 10px;
-    height: 100vh;
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  }
-  
-  .admin-tab {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 20px;
-    color: #fff;
-    cursor: pointer;
-    transition: background 0.3s ease, transform 0.2s ease;
-    font-size: 16px;
-  }
-  
-  .admin-tab:hover {
-    background-color: #5c1c49;
-    transform: translateX(5px);
-  }
-  
-  .admin-tab.active {
-    background-color: #993f6b;
-    font-weight: bold;
-  }
-  
-  .tab-icon {
-    font-size: 18px;
-  }
-  
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  padding-top: 20px;
+  gap: 10px;
+  height: 100vh;
+  background-color: #1A1A1A; /* fondo del sidebar oscuro */
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3); /* sombra más marcada para profundidad */
+}
+
+.admin-tab {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 24px;
+  color: #F1F1F1; /* texto claro */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 16px;
+  border-radius: 8px;
+  margin: 0 10px;
+  background-color: transparent;
+}
+
+.admin-tab:hover {
+  background-color: #E63946;
+  color: #ffffff;
+  transform: translateX(6px);
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.3);
+}
+
+.admin-tab.active {
+  background-color: #C1121F;
+  color: #ffffff;
+  font-weight: bold;
+  box-shadow: 0 4px 14px rgba(193, 18, 31, 0.4);
+}
+
+.tab-icon {
+  font-size: 18px;
+  color: inherit;
+  transition: color 0.3s ease;
+}

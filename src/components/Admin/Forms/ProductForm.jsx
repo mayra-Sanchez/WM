@@ -177,10 +177,20 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         try {
             if (isEdit) {
                 await updateProduct(product.id, payload);
-                Swal.fire('Actualizado', 'Producto actualizado correctamente.', 'success');
+                Swal.fire({
+                    title: 'Actualizado', 
+                    text: 'Producto actualizado correctamente.', 
+                    icon: 'success',
+                    confirmButtonColor: '#E63946',
+                });
             } else {
                 await createProduct(payload);
-                Swal.fire('Creado', 'Producto creado correctamente.', 'success');
+                Swal.fire({
+                    title: 'Creado', 
+                    text: 'Producto creado correctamente.', 
+                    icon: 'success',
+                    confirmButtonColor: '#E63946',
+                });
             }
             onClose();
             onSuccess();
@@ -258,10 +268,17 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                                             className="product-form-select"
                                         >
                                             <option value="">Talla</option>
-                                            {sizeOptions.map(size => (
-                                                <option key={size} value={size}>{size}</option>
-                                            ))}
+                                            {sizeOptions.map(size => {
+                                                const usedSizes = (variantSizes[variantIndex] || []).map(s => s.size);
+                                                const isCurrent = size === sizeObj.size;
+                                                const isUsed = usedSizes.includes(size);
+
+                                                if (isUsed && !isCurrent) return null; // Oculta si ya fue seleccionada y no es la actual
+
+                                                return <option key={size} value={size}>{size}</option>;
+                                            })}
                                         </select>
+
                                         <input
                                             type="number"
                                             value={sizeObj.stock}
