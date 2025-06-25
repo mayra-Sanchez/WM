@@ -1,7 +1,12 @@
-import React from 'react';
+import ProductList from "./Forms/ProductList";
 
 const ProductManagement = () => {
-  return <div>Gestión de Productos</div>;
+  return (
+    <div> 
+      <ProductList />
+
+    </div>
+  );
 };
 
 export default ProductManagement;

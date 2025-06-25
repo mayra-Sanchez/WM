@@ -42,35 +42,41 @@ const onSubmit = async (data) => {
       <input
         {...register("name", { required: true })}
         placeholder="Nombre"
+        className="auth-form-input"
       />
       <input
         {...register("last_name", { required: true })}
         placeholder="Apellido"
+        className="auth-form-input"
       />
       <input
         {...register("phone_number", { required: true })}
         placeholder="Teléfono"
+        className="auth-form-input"
       />
       <input
         {...register("username", { required: true })}
         placeholder="Nombre de usuario"
+        className="auth-form-input"
       />
       <input
         {...register("email", { required: true })}
         type="email"
         placeholder="Correo electrónico"
+        className="auth-form-input"
       />
       <div className="input-wrapper">
         <input
           {...register("password", { required: true })}
           type={showPassword ? "text" : "password"}
           placeholder="Contraseña"
+          className="auth-form-input"
         />
         <span className="eye-icon" onClick={togglePassword}>
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
         </span>
       </div>
-      <select {...register("role", { required: true })}>
+      <select {...register("role", { required: true })} className="auth-form-select">
         <option value="">Selecciona un rol</option>
         <option value="admin">Administrador</option>
         <option value="cliente">Cliente</option>
