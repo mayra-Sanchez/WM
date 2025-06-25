@@ -94,8 +94,8 @@
   }
 
   /* Inputs y selects */
-  form input,
-  form select {
+  form .auth-form-input,
+  form .auth-form-select {
     width: 100%;
     padding: 0.75rem 1rem;
     border-radius: 0.75rem;
@@ -106,13 +106,13 @@
     transition: box-shadow 0.2s ease;
   }
   
-  form input:focus,
-  form select:focus {
+  form .auth-form-input:focus,
+  form .auth-form-select:focus {
     box-shadow: 0 0 0 2px #e63946;
     outline: none;
   }
   
-  form input::placeholder {
+  form .auth-form-input::placeholder {
     color: #888;
   }
   

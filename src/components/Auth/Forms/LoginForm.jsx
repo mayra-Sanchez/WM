@@ -60,12 +60,14 @@ export function LoginForm() {
         {...register("email", { required: true })}
         type="email"
         placeholder="Correo electrónico"
+        className="auth-form-input"
       />
       <div className="input-wrapper">
         <input
           {...register("password", { required: true })}
           type={showPassword ? "text" : "password"}
           placeholder="Contraseña"
+          className="auth-form-input"
         />
         <span className="eye-icon" onClick={togglePassword}>
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
