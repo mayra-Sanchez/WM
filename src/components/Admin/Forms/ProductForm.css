@@ -3,15 +3,16 @@
   margin: 0 auto;
   padding: 20px;
   font-family: 'Segoe UI', sans-serif;
-  background: #fff;
+  background: #1F1F1F;
   border-radius: 12px;
+  color: #F1F1F1;
 }
 
 .product-form h3 {
   font-size: 24px;
   margin-bottom: 20px;
   text-align: center;
-  color: #333;
+  color: #F1F1F1;
 }
 
 .product-form form {
@@ -20,22 +21,21 @@
   gap: 15px;
 }
 
-
 .product-form-input,
 .product-form-select {
-  background: #fff;
+  background: #2A2A2A;
   width: 100%;
   padding: 10px 14px;
-  color: #303030;
-  border: 1px solid #ccc;
+  color: #F1F1F1;
+  border: 1px solid #444;
   border-radius: 8px;
-  border: 2px solid #d8d7d8;
-  transition: border-color 0.3s;
   font-size: 16px;
+  transition: border-color 0.3s;
 }
 
 .product-form-input:focus,
 .product-form-select:focus {
+  border-color: #E63946;
   outline: none;
 }
 
@@ -46,13 +46,14 @@
 }
 
 .variant-card {
-  border: 1px solid #ddd;
+  border: 1px solid #333;
   padding: 16px;
   border-radius: 10px;
-  background-color: #f7f7f7;
+  background-color: #2A2A2A;
   display: flex;
   flex-direction: column;
   gap: 10px;
+  color: #F1F1F1;
 }
 
 .variant-header {
@@ -65,7 +66,7 @@
   margin: 0;
   font-size: 16px;
   font-weight: bold;
-  color: #444;
+  color: #F1F1F1;
 }
 
 .variant-sizes {
@@ -107,19 +108,18 @@
 }
 
 .product-form button[type="submit"] {
-  background-color: #4CAF50;
+  background-color: #4e4e4e;
   color: white;
 }
 
 .product-form button[type="submit"]:hover {
-  background-color: #43a047;
+  background-color: #3e5a44;
 }
 
 .product-form .cancel-btn {
-  background-color: #f44336;
+  background-color: #E63946;
   color: white;
 }
-
 
 .delete-variant-btn {
   background: #E63946;
@@ -127,25 +127,16 @@
   color: #fff;
 }
 
-.add-size-btn {
-  background: #993F6B;
-  color: #fff;
-  transition: all 0.3s ease;
-
-}
-
-.add-size-btn:hover {
-  background: #6d2d4c;
-}
-
+.add-size-btn,
 .add-variant-btn {
-  background: #993F6B;
+  background: #E63946;
   color: #fff;
   transition: all 0.3s ease;
 }
 
+.add-size-btn:hover,
 .add-variant-btn:hover {
-  background: #6d2d4c;
+  background: #C1121F;
 }
 
 .form-tabs {
@@ -156,7 +147,8 @@
 }
 
 .form-tabs button {
-  background: #eee;
+  background: #2A2A2A;
+  color: #F1F1F1;
   border: none;
   padding: 8px 16px;
   font-size: 14px;
@@ -166,7 +158,7 @@
 }
 
 .form-tabs button.active {
-  background: #993F6B;
+  background: #E63946;
   color: white;
 }
 
@@ -184,7 +176,7 @@
 
 .upload-btn {
   display: inline-block;
-  background-color: #993F6B;
+  background-color: #E63946;
   color: white;
   padding: 8px 16px;
   border-radius: 6px;
@@ -196,7 +188,7 @@
 }
 
 .upload-btn:hover {
-  background-color: #642946;
+  background-color: #C1121F;
 }
 
 .upload-btn input[type="file"] {
@@ -219,9 +211,9 @@
   position: relative;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
   aspect-ratio: 1 / 1;
-  background-color: #f3f3f3;
+  background-color: #2A2A2A;
 }
 
 .image-card img {

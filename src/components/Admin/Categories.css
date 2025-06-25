@@ -2,7 +2,7 @@
   font-size: 28px;
   font-weight: 600;
   margin-bottom: 25px;
-  color: #333;
+  color: #F1F1F1;
 }
 
 .categories-table {
@@ -11,12 +11,13 @@
   border-spacing: 0;
   border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  background-color: #fff;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+  background-color: #1F1F1F; 
+  color: #F1F1F1;
 }
 
 .categories-table thead {
-  background-color: #993F6B;
+  background-color: #E63946;
   color: white;
 }
 
@@ -24,27 +25,27 @@
 .categories-table td {
   padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid #e0e0e0;
+  border-bottom: 1px solid #333; 
 }
 
 .categories-table tbody tr:hover {
-  background-color: #f1f5fb;
+  background-color: #2A2A2A;
   transition: background-color 0.2s ease-in-out;
 }
 
 .bold {
   font-weight: 600;
-  color: #222;
+  color: #ffffff;
 }
 
 .subcategory-row {
-  background-color: #f8ebf2;
+  background-color: #2E1F25;
 }
 
 .subcategory-name {
   padding-left: 30px;
   font-style: italic;
-  color: #666;
+  color: #B0B0B0;
 }
 
 .categories-table th:first-child,
@@ -65,23 +66,24 @@
   font-size: 18px;
   padding: 4px;
   transition: color 0.2s ease, transform 0.2s ease;
+  color: #F1F1F1;
 }
 
 .edit-btn {
-  color: #4a90e2;
+  color: #4FC3F7;
 }
 
 .edit-btn:hover {
-  color: #2f6fc2;
+  color: #29B6F6;
   transform: scale(1.1);
 }
 
 .delete-btn {
-  color: #e74c3c;
+  color: #EF5350;
 }
 
 .delete-btn:hover {
-  color: #c0392b;
+  color: #E53935;
   transform: scale(1.1);
 }
 
@@ -93,7 +95,7 @@
 }
 
 .create-btn {
-  background-color: #4CAF50;
+  background-color: #E63946; 
   color: white;
   border: none;
   padding: 8px 14px;
@@ -104,8 +106,11 @@
   align-items: center;
   gap: 6px;
   font-weight: bold;
+  box-shadow: 0 4px 12px rgba(230, 57, 70, 0.25);
+  transition: background 0.2s ease, transform 0.2s ease;
 }
 
 .create-btn:hover {
-  background-color: #43a047;
+  background-color: #C1121F;
+  transform: scale(1.05);
 }

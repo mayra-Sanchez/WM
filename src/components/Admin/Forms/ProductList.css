@@ -1,42 +1,43 @@
 .products-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    border-radius: 10px;
-    overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-    background-color: #fff;
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  background-color: #1F1F1F; 
+  color: #F1F1F1;
 }
 
 .products-table thead {
-    background-color: #993F6B;
-    color: white;
+  background-color: #E63946; 
+  color: white;
 }
 
 .products-table th,
 .products-table td {
-    padding: 14px 18px;
-    text-align: left;
-    border-bottom: 1px solid #e0e0e0;
+  padding: 14px 18px;
+  text-align: left;
+  border-bottom: 1px solid #333;
 }
 
 .products-table tbody tr:hover {
-    background-color: #f1f5fb;
-    transition: background-color 0.2s ease-in-out;
+  background-color: #2A2A2A;
+  transition: background-color 0.2s ease-in-out;
 }
 
 .products-table th:first-child,
 .products-table td:first-child {
-    border-top-left-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 .products-table th:last-child,
 .products-table td:last-child {
-    border-top-right-radius: 10px;
+  border-top-right-radius: 10px;
 }
 
 .variant-button {
-  background-color: #993F6B;
+  background-color: #E63946;
   color: white;
   border: none;
   padding: 6px 12px;
@@ -44,12 +45,13 @@
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
   margin-left: 20px;
 }
 
 .variant-button:hover {
-  background-color: #773153;
+  background-color: #C1121F;
+  transform: scale(1.05);
 }
 
 .variant-container {
@@ -60,17 +62,18 @@
 }
 
 .variant-card {
-  background-color: #ffffff;
-  border: 1px solid #ddd;
+  background-color: #2A2A2A;
+  border: 1px solid #444;
   padding: 12px 16px;
   border-radius: 8px;
   margin-bottom: 15px;
+  color: #F1F1F1;
 }
 
 .variant-card p {
   margin-bottom: 8px;
   font-weight: 600;
-  color: #333;
+  color: #F1F1F1;
 }
 
 .variant-card ul {
@@ -83,8 +86,8 @@
 }
 
 .size-badge {
-  background-color: #dbacc3;
-  color: #993F6B;
+  background-color: #5C2E36;
+  color: #F1F1F1;
   padding: 2px 8px;
   border-radius: 4px;
   font-weight: 600;
@@ -93,19 +96,21 @@
 }
 
 .stock-text {
-  color: #303030;
+  color: #B0B0B0;
   font-size: 13px;
 }
 
 .swal-confirm-btn {
-    background: #993F6B;
-    color: #fff;
-    padding: 10px 20px;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+  background: #E63946;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border: none;
+  font-weight: bold;
 }
 
-
 .swal-confirm-btn:hover {
-    background: #753152;
+  background: #C1121F;
+  transform: scale(1.05);
 }

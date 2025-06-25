@@ -27,20 +27,23 @@ const ProductList = () => {
             text: '¡Esto eliminará el producto permanentemente!',
             icon: 'warning',
             showCancelButton: true,
+            confirmButtonColor: '#E63946',
             confirmButtonText: 'Sí, eliminar',
         });
 
         if (confirm.isConfirmed) {
             await deleteProduct(id);
-            await Swal.fire('Eliminado', 'El producto ha sido eliminado.', 'success');
+            await Swal.fire({
+                text: 'El producto ha sido eliminado.',
+                confirmButtonColor: '#E63946',
+                icon: 'success',
+            });
             loadProducts();
         }
     };
 
     return (
         <div className="product-list-container">
-            <h2>Productos</h2>
-
             <table className="products-table">
                 <thead>
                     <tr>
@@ -77,16 +80,20 @@ const ProductList = () => {
                                         }).join('');
 
                                         Swal.fire({
-                                            title: 'Detalles de variantes',
+                                            title: '<span style="color: #fff">Detalles de variantes</span>',
                                             html: `<div class="variant-container">${detailHtml}</div>`,
                                             width: 600,
+                                            background: '#1F1F1F',
+                                            color: '#F1F1F1',
                                             showCloseButton: true,
                                             confirmButtonText: 'Cerrar',
+                                            confirmButtonColor: '#E63946',
                                             customClass: {
                                                 popup: 'swal-wide',
                                                 confirmButton: 'swal-confirm-btn',
                                             }
                                         });
+
                                     }}
                                 >
                                     Ver variantes
