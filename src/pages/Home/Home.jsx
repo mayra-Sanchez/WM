@@ -3,13 +3,14 @@ import "./Home.css";
 import Footer from "../../components/Footer/Footer";
 import FeaturesStrip from "../components/caracteristicas/FeaturesStrip";
 import HeroVideo from "../components/video/HeroVideo";
+import ProductCarousel from "../../components/Client/ProductCarousel";
 
 const Home = () => {
   return (
     <div>
       <Navbar />
       <HeroVideo />
-      Home
+      <ProductCarousel />
       <FeaturesStrip />
       <Footer />
     </div>

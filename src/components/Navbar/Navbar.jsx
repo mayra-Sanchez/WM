@@ -7,8 +7,11 @@ import {
   faSearch,
   faBars,
   faTimes,
+  faChevronDown,
+  faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout/AuthLayout";
 import "./Navbar.css";
 import logo from "../../assets/logo_wm.png";
@@ -21,11 +24,13 @@ const Navbar = () => {
   });
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [subOpen, setSubOpen] = useState({});
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("http://localhost:8000/api/categorias");
+        const response = await axios.get("http://127.0.0.1:8000/products/api/categories/");
         setCategorias(response.data);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
@@ -41,10 +46,22 @@ const Navbar = () => {
   };
 
   const toggleAuthModal = () => {
-    // Cierra el menú móvil si está abierto
     if (menuOpen) setMenuOpen(false);
-    // Alterna la visibilidad del modal
-    setShowAuthModal(prev => !prev);
+    setShowAuthModal((prev) => !prev);
+  };
+
+  const toggleSubMenu = (id) => {
+    setSubOpen((prev) => ({ ...prev, [id]: !prev[id] }));
+  };
+
+  const goToCategory = (id) => {
+    setMenuOpen(false);
+    navigate(`/categoria/${id}`);
+  };
+
+  const goToSubcategory = (id) => {
+    setMenuOpen(false);
+    navigate(`/subcategoria/${id}`);
   };
 
   return (
@@ -54,26 +71,52 @@ const Navbar = () => {
       </div>
 
       <nav className="navbar">
-        <div className="navbar-logo">
+        <div className="navbar-logo" onClick={() => navigate("/")}>
           <img src={logo} alt="Logo WM" />
         </div>
 
-        {/* Ícono hamburguesa (visible solo en móvil) */}
         <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
         </div>
 
-        {/* Menú principal */}
         <ul className="navbar-menu desktop">
-          <motion.li whileHover={{ scale: 1.1 }}>INICIO</motion.li>
+          <motion.li whileHover={{ scale: 1.1 }} onClick={() => navigate("/")}>INICIO</motion.li>
           {categorias.map((cat) => (
-            <motion.li key={cat.id} whileHover={{ scale: 1.1 }}>
-              {cat.nombre.toUpperCase()}
+            <motion.li
+              key={cat.id}
+              className="category-item"
+              whileHover={{ scale: 1.05 }}
+              onMouseEnter={() => setSubOpen({ [cat.id]: true })}
+              onMouseLeave={() => setSubOpen({ [cat.id]: false })}
+            >
+              <div className="category-header" onClick={() => goToCategory(cat.id)}>
+                {cat.name.toUpperCase()}{" "}
+                {cat.subcategories.length > 0 && (
+                  <FontAwesomeIcon
+                    icon={faChevronDown}
+                    className="dropdown-icon"
+                  />
+                )}
+              </div>
+
+              {cat.subcategories.length > 0 && subOpen[cat.id] && (
+                <ul className="subcategory-list">
+                  {cat.subcategories.map((sub) => (
+                    <li
+                      key={sub.id}
+                      className="subcategory-item"
+                      onClick={() => goToSubcategory(sub.id)}
+                    >
+                      {sub.name}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </motion.li>
           ))}
+
         </ul>
 
-        {/* Iconos */}
         <div className="navbar-icons">
           {user ? (
             <div className="user-info">
@@ -83,18 +126,13 @@ const Navbar = () => {
               </button>
             </div>
           ) : (
-            <FontAwesomeIcon
-              icon={faUser}
-              className="icon"
-              onClick={toggleAuthModal}
-            />
+            <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
           )}
           <FontAwesomeIcon icon={faShoppingCart} className="icon" />
           <FontAwesomeIcon icon={faSearch} className="icon" />
         </div>
       </nav>
 
-      {/* Menú móvil */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -112,10 +150,37 @@ const Navbar = () => {
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <li onClick={() => setMenuOpen(false)}>INICIO</li>
+              <li onClick={() => { setMenuOpen(false); navigate("/"); }}>INICIO</li>
               {categorias.map((cat) => (
-                <li key={cat.id} onClick={() => setMenuOpen(false)}>
-                  {cat.nombre.toUpperCase()}
+                <li key={cat.id}>
+                  <div
+                    className="category-header"
+                    onClick={() => {
+                      toggleSubMenu(cat.id);
+                      goToCategory(cat.id);
+                    }}
+                  >
+                    {cat.name.toUpperCase()}{" "}
+                    {cat.subcategories.length > 0 && (
+                      <FontAwesomeIcon
+                        icon={subOpen[cat.id] ? faChevronUp : faChevronDown}
+                        className="dropdown-icon"
+                      />
+                    )}
+                  </div>
+                  {cat.subcategories.length > 0 && subOpen[cat.id] && (
+                    <ul className="subcategory-list">
+                      {cat.subcategories.map((sub) => (
+                        <li
+                          key={sub.id}
+                          className="subcategory-item"
+                          onClick={() => goToSubcategory(sub.id)}
+                        >
+                          {sub.name}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </li>
               ))}
             </motion.ul>
@@ -123,7 +188,6 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      {/* Modal de Login/Registro */}
       <AnimatePresence>
         {showAuthModal && (
           <motion.div

@@ -1,0 +1,138 @@
+.carousel-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.arrow {
+  background: rgba(0, 0, 0, 0.6);
+  border: none;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 50%;
+  z-index: 2;
+  transition: background 0.3s;
+}
+
+.arrow:hover {
+  background: #cc0000;
+}
+
+.arrow.left {
+  position: absolute;
+  left: 0;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+.arrow.right {
+  position: absolute;
+  right: 0;
+  top: 40%;
+  transform: translateY(-50%);
+}
+
+.carousel-wrapper {
+  margin-bottom: 3rem;
+}
+
+.carousel-title {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 1rem;
+  padding-left: 1rem;
+  border-left: 4px solid #cc0000;
+}
+
+.carousel {
+  display: flex;
+  overflow-x: auto;
+  gap: 1rem;
+  padding: 1rem;
+  scroll-behavior: smooth;
+  scrollbar-width: none; /* Firefox */
+}
+
+.carousel::-webkit-scrollbar {
+  display: none; /* Chrome */
+}
+
+.product-card {
+  flex: 0 0 auto;
+  width: 200px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  position: relative;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+.product-image {
+  width: 100%;
+  height: 230px;
+  object-fit: cover;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+}
+
+.product-info {
+  padding: 1rem;
+  text-align: center;
+}
+
+.product-info h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #333;
+  margin: 0.5rem 0;
+}
+
+.price {
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #000;
+}
+
+.price-old {
+  text-decoration: line-through;
+  color: #999;
+  margin-right: 5px;
+}
+
+.price-new {
+  color: #cc0000;
+  font-weight: bold;
+}
+
+.discount-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background: #cc0000;
+  color: #fff;
+  font-size: 0.75rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: bold;
+  z-index: 1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .product-card {
+    width: 160px;
+  }
+
+  .product-image {
+    height: 180px;
+  }
+}
