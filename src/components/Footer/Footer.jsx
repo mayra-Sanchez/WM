@@ -50,7 +50,7 @@ const Footer = () => {
       <footer className="footer">
         <div className="footer-column">
           <p>
-            <FontAwesomeIcon icon={faWhatsapp} /> +57 321 877 5416
+            <FontAwesomeIcon icon={faWhatsapp} /> +57 310 636 6464
           </p>
           <p>
             <FontAwesomeIcon icon={faEnvelope} /> wm.benchmarking@gmail.com
@@ -93,21 +93,21 @@ const Footer = () => {
 
           <div className="footer-socials">
             <a
-              href="https://facebook.com/wmsport"
+              href="https://www.facebook.com/profile.php?id=61562943503117"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FontAwesomeIcon icon={faFacebook} />
             </a>
             <a
-              href="https://tiktok.com/@wmsport"
+              href="https://www.tiktok.com/@wm.sportswear"
               target="_blank"
               rel="noopener noreferrer"
             >
               <FontAwesomeIcon icon={faTiktok} />
             </a>
             <a
-              href="https://instagram.com/wmsport"
+              href="https://www.instagram.com/wm__sportswear"
               target="_blank"
               rel="noopener noreferrer"
             >

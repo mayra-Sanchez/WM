@@ -13,6 +13,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout/AuthLayout";
+import ProductModal from "../Client/ProductModal";
 import "./Navbar.css";
 import logo from "../../assets/logo_wm.png";
 
@@ -25,6 +26,13 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [subOpen, setSubOpen] = useState({});
+  const [showSearch, setShowSearch] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filteredProducts, setFilteredProducts] = useState([]);
+  const [productos, setProductos] = useState([]);
+  const [showProductModal, setShowProductModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [searchField, setSearchField] = useState("name");
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,9 +44,46 @@ const Navbar = () => {
         console.error("Error al obtener categorías:", error);
       }
     };
-
     fetchCategorias();
   }, []);
+
+  useEffect(() => {
+    const fetchProductos = async () => {
+      try {
+        const response = await axios.get("http://127.0.0.1:8000/products/api/products/");
+        setProductos(response.data);
+      } catch (error) {
+        console.error("Error al obtener productos:", error);
+      }
+    };
+    fetchProductos();
+  }, []);
+
+  const toggleSearchBar = () => {
+    setShowSearch((prev) => !prev);
+    setSearchTerm("");
+    setFilteredProducts([]);
+  };
+
+  const handleSearchChange = (e) => {
+    const term = e.target.value.toLowerCase();
+    setSearchTerm(term);
+
+    const resultados = productos.filter((product) => {
+      if (searchField === "name") {
+        return product.name?.toLowerCase().includes(term);
+      } else if (searchField === "color") {
+        return product.variants?.some((variant) => variant.color?.toLowerCase().includes(term));
+      } else if (searchField === "size") {
+        return product.variants?.some((variant) =>
+          variant.sizes?.some((size) => size.size?.toLowerCase().includes(term))
+        );
+      }
+      return false;
+    });
+
+    setFilteredProducts(resultados);
+  };
 
   const handleLogout = () => {
     localStorage.removeItem("user");
@@ -71,9 +116,7 @@ const Navbar = () => {
       </div>
 
       <nav className="navbar">
-        <div className="navbar-logo" onClick={() => navigate("/")}>
-          <img src={logo} alt="Logo WM" />
-        </div>
+        <div className="navbar-logo" onClick={() => navigate("/")}> <img src={logo} alt="Logo WM" /> </div>
 
         <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
@@ -90,15 +133,10 @@ const Navbar = () => {
               onMouseLeave={() => setSubOpen({ [cat.id]: false })}
             >
               <div className="category-header" onClick={() => goToCategory(cat.id)}>
-                {cat.name.toUpperCase()}{" "}
-                {cat.subcategories.length > 0 && (
-                  <FontAwesomeIcon
-                    icon={faChevronDown}
-                    className="dropdown-icon"
-                  />
+                {cat.name.toUpperCase()} {cat.subcategories.length > 0 && (
+                  <FontAwesomeIcon icon={faChevronDown} className="dropdown-icon" />
                 )}
               </div>
-
               {cat.subcategories.length > 0 && subOpen[cat.id] && (
                 <ul className="subcategory-list">
                   {cat.subcategories.map((sub) => (
@@ -114,22 +152,51 @@ const Navbar = () => {
               )}
             </motion.li>
           ))}
-
         </ul>
 
-        <div className="navbar-icons">
+        <div className="navbar-icons" style={{ position: "relative" }}>
           {user ? (
             <div className="user-info">
               <span>Hola, {user.name}</span>
-              <button onClick={handleLogout} className="logout-btn">
-                Cerrar sesión
-              </button>
+              <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
             </div>
           ) : (
             <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
           )}
           <FontAwesomeIcon icon={faShoppingCart} className="icon" />
-          <FontAwesomeIcon icon={faSearch} className="icon" />
+          <FontAwesomeIcon icon={faSearch} className="icon" onClick={toggleSearchBar} />
+
+          {showSearch && (
+            <div className="search-bar-container">
+              <select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
+                <option value="nombre">Nombre</option>
+                <option value="color">Color</option>
+                <option value="talla">Talla</option>
+              </select>
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={handleSearchChange}
+                placeholder={`Buscar por ${searchField}...`}
+              />
+              {filteredProducts.length > 0 && (
+                <div className="search-results">
+                  {filteredProducts.map((product) => (
+                    <p
+                      key={product.id}
+                      onClick={() => {
+                        setSelectedProduct(product);
+                        setShowProductModal(true);
+                        setShowSearch(false);
+                      }}
+                    >
+                      {product.name}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </nav>
 
@@ -160,8 +227,7 @@ const Navbar = () => {
                       goToCategory(cat.id);
                     }}
                   >
-                    {cat.name.toUpperCase()}{" "}
-                    {cat.subcategories.length > 0 && (
+                    {cat.name.toUpperCase()} {cat.subcategories.length > 0 && (
                       <FontAwesomeIcon
                         icon={subOpen[cat.id] ? faChevronUp : faChevronDown}
                         className="dropdown-icon"
@@ -207,6 +273,23 @@ const Navbar = () => {
               <AuthLayout onClose={toggleAuthModal} />
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showProductModal && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            isOpen={showProductModal}
+            onClose={() => {
+              setShowProductModal(false);
+              setSelectedProduct(null);
+            }}
+            addToCart={(item) => {
+              console.log("Agregar al carrito:", item);
+              // Aquí conecta con tu lógica real de carrito
+            }}
+          />
         )}
       </AnimatePresence>
     </header>

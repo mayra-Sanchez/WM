@@ -1,12 +1,13 @@
-
 /* ---------- TOP BAR ---------- */
 .top-bar {
   background-color: #000;
   color: #fff;
   text-align: center;
   font-size: 0.8rem;
-  padding: 5px;
+  padding: 6px 12px;
   animation: pulse 2s infinite;
+  letter-spacing: 0.5px;
+  font-weight: 500;
 }
 
 @keyframes pulse {
@@ -26,47 +27,57 @@
   justify-content: space-between;
   align-items: center;
   background-color: #111;
-  padding: 10px 20px;
+  padding: 12px 24px;
   position: relative;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
 .navbar-logo img {
-  height: 40px;
+  height: 45px;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.navbar-logo img:hover {
+  transform: scale(1.05);
 }
 
 .navbar-menu {
   list-style: none;
   display: flex;
-  gap: 20px;
-  font-weight: bold;
+  gap: 24px;
+  font-weight: 600;
   color: #fff;
   padding: 0;
   margin: 0;
+  text-transform: uppercase;
 }
 
 .navbar-menu li {
   cursor: pointer;
-  transition: color 0.2s ease;
+  transition: color 0.25s ease;
 }
 
 .navbar-menu li:hover {
-  color: #ff0000;
+  color: #e63946;
 }
 
 .navbar-icons {
   display: flex;
-  gap: 15px;
+  gap: 18px;
   color: #fff;
   align-items: center;
 }
 
 .icon {
   cursor: pointer;
-  transition: transform 0.2s ease;
+  font-size: 1.2rem;
+  transition: transform 0.2s ease, color 0.2s;
 }
 
 .icon:hover {
   transform: scale(1.2);
+  color: #e63946;
 }
 
 /* ---------- USER INFO ---------- */
@@ -75,13 +86,14 @@
   align-items: center;
   gap: 10px;
   font-size: 0.9rem;
+  color: #fff;
 }
 
 .logout-btn {
-  background-color: #ff0000;
+  background-color: #e63946;
   border: none;
   color: white;
-  padding: 6px 10px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 0.85rem;
@@ -89,14 +101,14 @@
 }
 
 .logout-btn:hover {
-  background-color: #cc0000;
+  background-color: #c92c3b;
 }
 
 /* ---------- HAMBURGER ---------- */
 .hamburger {
   display: none;
   color: #fff;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   cursor: pointer;
 }
 
@@ -107,17 +119,17 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 15, 15, 0.7);
-  backdrop-filter: blur(5px);
+  background: rgba(15, 15, 15, 0.75);
+  backdrop-filter: blur(6px);
   z-index: 1000;
 }
 
 .mobile-menu {
   background-color: #111;
   width: 80%;
-  max-width: 300px;
+  max-width: 320px;
   height: 100%;
-  padding: 40px 20px;
+  padding: 40px 24px;
   position: fixed;
   top: 0;
   right: 0;
@@ -125,7 +137,7 @@
   flex-direction: column;
   gap: 25px;
   list-style: none;
-  font-size: 1.2rem;
+  font-size: 1.1rem;
   color: #fff;
   z-index: 1001;
 }
@@ -138,7 +150,7 @@
 }
 
 .mobile-menu li:hover {
-  color: #ff0000;
+  color: #e63946;
 }
 
 /* Responsive */
@@ -156,6 +168,8 @@
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+  padding: 5px 0;
+  color: #fff;
 }
 
 .subcategory-list {
@@ -163,17 +177,19 @@
   margin-top: 5px;
   padding-left: 15px;
   list-style: none;
+  border-left: 2px solid #333;
 }
 
 .subcategory-item {
   color: #ccc;
-  padding: 5px 0;
+  padding: 6px 0;
   font-size: 0.9rem;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .subcategory-item:hover {
-  color: #ff0000;
+  color: #e63946;
 }
 
 .dropdown-icon {
@@ -181,3 +197,66 @@
   font-size: 0.8rem;
 }
 
+.search-bar-container {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #1c1c1c;
+  padding: 0.6rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  width: 320px;
+  z-index: 1000;
+  color: #fff;
+}
+
+.search-bar-container input,
+.search-bar-container select {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background-color: #2a2a2a;
+  color: white;
+  font-size: 0.9rem;
+  margin-bottom: 0.4rem;
+}
+
+.search-bar-input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  color: #999;
+  font-size: 1rem;
+  pointer-events: none;
+}
+
+.search-results {
+  background-color: #1c1c1c;
+  border: 1px solid #444;
+  border-radius: 6px;
+  max-height: 250px;
+  overflow-y: auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.search-results p {
+  padding: 0.6rem 1rem;
+  margin: 0;
+  font-size: 14px;
+  color: #ddd;
+  cursor: pointer;
+  transition: background 0.2s;
+  border-bottom: 1px solid #2e2e2e;
+}
+
+.search-results p:hover {
+  background-color: #2a2a2a;
+  color: #fff;
+}
