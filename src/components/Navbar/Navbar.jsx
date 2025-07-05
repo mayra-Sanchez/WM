@@ -16,13 +16,13 @@ import AuthLayout from "../Auth/AuthLayout/AuthLayout";
 import ProductModal from "../Client/ProductModal";
 import "./Navbar.css";
 import logo from "../../assets/logo_wm.png";
+import CartDropdown from "./components/CartDropDown";
+import { useAuth } from "../../contexts/AuthContext";
+import { useCart } from "../../contexts/CartContext";
 
 const Navbar = () => {
   const [categorias, setCategorias] = useState([]);
-  const [user, setUser] = useState(() => {
-    const savedUser = localStorage.getItem("user");
-    return savedUser ? JSON.parse(savedUser) : null;
-  });
+  const { user, logout } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [subOpen, setSubOpen] = useState({});
@@ -34,6 +34,9 @@ const Navbar = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [searchField, setSearchField] = useState("name");
   const navigate = useNavigate();
+  const [showCart, setShowCart] = useState(false);
+  const { cartItems } = useCart();
+
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -86,8 +89,8 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    setUser(null);
+    logout();
+    navigate('/');
   };
 
   const toggleAuthModal = () => {
@@ -108,6 +111,8 @@ const Navbar = () => {
     setMenuOpen(false);
     navigate(`/subcategoria/${id}`);
   };
+
+  const toggleCart = () => setShowCart(!showCart);
 
   return (
     <header>
@@ -163,7 +168,12 @@ const Navbar = () => {
           ) : (
             <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
           )}
-          <FontAwesomeIcon icon={faShoppingCart} className="icon" />
+          <div className="icon-with-badge" onClick={toggleCart}>
+            <FontAwesomeIcon icon={faShoppingCart} className="icon" />
+            {cartItems.length > 0 && (
+              <span className="cart-badge">{cartItems.length}</span>
+            )}
+          </div>
           <FontAwesomeIcon icon={faSearch} className="icon" onClick={toggleSearchBar} />
 
           {showSearch && (
@@ -276,22 +286,7 @@ const Navbar = () => {
         )}
       </AnimatePresence>
 
-      <AnimatePresence>
-        {showProductModal && selectedProduct && (
-          <ProductModal
-            product={selectedProduct}
-            isOpen={showProductModal}
-            onClose={() => {
-              setShowProductModal(false);
-              setSelectedProduct(null);
-            }}
-            addToCart={(item) => {
-              console.log("Agregar al carrito:", item);
-              // Aquí conecta con tu lógica real de carrito
-            }}
-          />
-        )}
-      </AnimatePresence>
+      <CartDropdown isOpen={showCart} onClose={toggleCart} />
     </header>
   );
 };

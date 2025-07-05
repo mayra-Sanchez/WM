@@ -7,14 +7,15 @@ import ProductManagement from '../../components/Admin/ProductManagement';
 import Reports from '../../components/Admin/Reports';
 import './AdminPanel.css';
 import Categories from '../../components/Admin/Categories';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
-  const [user] = useState(JSON.parse(localStorage.getItem('user')));
   const [activeTab, setActiveTab] = useState('users');
+  const { user, logout } = useAuth();
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
+    logout();
     navigate('/');
   };
 
