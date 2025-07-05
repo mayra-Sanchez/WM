@@ -5,12 +5,14 @@ import Zoom from "react-medium-image-zoom";
 import Swal from "sweetalert2";
 import "react-medium-image-zoom/dist/styles.css";
 import "./ProductModal.css";
+import { useCart } from "../../contexts/CartContext";
 
-const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
+const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const { addItem } = useCart();
 
   useEffect(() => {
     if (product && product.variants.length > 0) {
@@ -39,10 +41,24 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
       return;
     }
 
-    addToCart({
-      productId: product.id,
-      variantId: variant.id,
-      size: selectedSize,
+    const selectedSizeObj = sizes.find(s => s.size === selectedSize);
+
+    if (!selectedSizeObj) {
+      Swal.fire({
+        icon: "error",
+        title: "Talla no válida",
+        text: "No se pudo encontrar el ID de la talla.",
+        background: "#1e1e1e",
+        color: "#fff",
+        confirmButtonColor: "#e63946",
+      });
+      return;
+    }
+
+    addItem({
+      variant: variant.id,
+      size: selectedSizeObj.id,
+      quantity: 1,
     });
 
     Swal.fire({
@@ -60,6 +76,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
 
     onClose();
   };
+
 
   return (
     <AnimatePresence>

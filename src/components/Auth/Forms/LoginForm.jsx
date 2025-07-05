@@ -5,9 +5,11 @@ import { Eye, EyeOff } from "lucide-react";
 import "../AuthLayout/AuthLayout.css";
 import { loginUser } from "../../../api/Auth";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../contexts/AuthContext";
 
 export function LoginForm() {
   const navigate = useNavigate();
+  const { login } = useAuth(); 
 
   const {
     register,
@@ -23,12 +25,7 @@ export function LoginForm() {
       const res = await loginUser(data);
       const { access, refresh, user } = res.data;
 
-      // Guardar tokens y usuario en localStorage
-      localStorage.setItem("accessToken", access);
-      localStorage.setItem("refreshToken", refresh);
-      localStorage.setItem("user", JSON.stringify(user));
-
-      console.log("LOGIN EXITOSO", res.data);
+      login({ access, refresh, user }); 
 
       Swal.fire({
         icon: "success",
@@ -44,7 +41,6 @@ export function LoginForm() {
           navigate("/");
         }
       }, 500);
-
     } catch (error) {
       console.error("ERROR LOGIN", error);
       Swal.fire({

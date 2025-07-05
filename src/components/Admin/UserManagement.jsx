@@ -32,13 +32,9 @@ const UserManagement = () => {
   };
 
   useEffect(() => {
-    if (token) {
-      fetchUsers();
-    } else {
-      alert("No hay token disponible. Inicia sesión.");
-      setLoading(false);
-    }
-  }, [token]);
+    if (!token) return;
+    fetchUsers();
+  }, []);
 
   const handleSendEmail = (email, message) => {
     const subject = encodeURIComponent("Info de la tienda");
