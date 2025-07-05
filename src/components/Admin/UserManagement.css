@@ -1,174 +1,228 @@
+/* ---------- GENERAL ---------- */
 .user-panel-container {
-  padding: 2rem;
-  background-color: #0f0f0f;
-  min-height: 100vh;
-  color: #f1f1f1;
-  font-family: "Segoe UI", sans-serif;
+  padding: 32px;
+  margin: auto;
+  color: #1a1a1a;
 }
 
+/* ---------- RESUMEN ---------- */
+.summary-bar {
+  display: flex;
+  gap: 24px;
+  padding: 16px 24px;
+  background-color: #fdfdfd;
+  border-left: 6px solid #C1121F;
+  border-radius: 10px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  flex-wrap: wrap;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+}
+
+.summary-icon {
+  font-size: 1.4rem;
+  color: #C1121F;
+  background: #ffe5e8;
+  padding: 8px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(193, 18, 31, 0.2);
+}
+
+/* ---------- ENCABEZADO PANEL ---------- */
 .panel-header {
   display: flex;
-  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
 }
 
 .panel-title {
   font-size: 1.8rem;
-  font-weight: 700;
-  border-left: 5px solid #e63946;
-  padding-left: 12px;
-  color: #ffffff;
+  font-weight: bold;
+  color: #fffefe;
 }
 
 .actions {
   display: flex;
+  gap: 14px;
   align-items: center;
-  gap: 1rem;
 }
 
 .search-box {
   display: flex;
   align-items: center;
-  background-color: #1a1a1a;
-  border: 1px solid #333;
-  padding: 0.5rem 1rem;
-  border-radius: 30px;
-  color: #aaa;
-  transition: all 0.3s ease;
+  background: #f2f2f2;
+  border-radius: 8px;
+  padding: 6px 10px;
+  gap: 8px;
+  border: 1px solid #ccc;
 }
 
 .search-box input {
   background: transparent;
   border: none;
   outline: none;
-  color: #f1f1f1;
-  margin-left: 0.5rem;
   font-size: 0.95rem;
   width: 180px;
 }
 
+/* ---------- BOTÓN REFRESCAR ---------- */
 .refresh-btn {
-  background-color: #e63946;
-  color: white;
-  padding: 0.6rem 0.8rem;
+  background-color: #C1121F;
   border: none;
-  border-radius: 10px;
+  padding: 8px 10px;
+  border-radius: 8px;
+  color: white;
   cursor: pointer;
-  transition: background 0.2s ease;
-  font-size: 1rem;
+  transition: background 0.3s;
 }
 
 .refresh-btn:hover {
-  background-color: #c1121f;
+  background-color: #a10e18;
 }
 
-.loading-text,
-.no-users-text {
-  text-align: center;
-  margin-top: 3rem;
-  color: #ccc;
-  font-size: 1.1rem;
-}
-
-.user-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
-  gap: 1.5rem;
-}
-
-.user-card {
-  background-color: #1a1a1a;
-  border-radius: 15px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  border: 1px solid #292929;
-}
-
-.user-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.3);
-}
-
-.user-header {
+/* ---------- MENSAJE MASIVO ---------- */
+.mass-message-box {
+  margin-bottom: 24px;
   display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 1rem;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.user-header h3 {
-  font-size: 1.2rem;
-  font-weight: 600;
-  color: #ffffff;
+.mass-message-box textarea {
+  width: 100%;
+  min-height: 100px;
+  border: 1px solid #ccc;
+  padding: 12px;
+  font-size: 1rem;
+  border-radius: 8px;
+  resize: vertical;
 }
 
-.user-role {
-  background-color: #e63946;
+.mass-message-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mass-send-btn {
+  background-color: #C1121F;
   color: #fff;
-  font-size: 0.75rem;
-  font-weight: bold;
-  padding: 0.2rem 0.6rem;
-  border-radius: 999px;
-  text-transform: uppercase;
-}
-
-.user-details p {
-  margin: 0.4rem 0;
-  font-size: 0.95rem;
-  color: #cccccc;
-}
-
-.user-actions {
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 500;
   display: flex;
-  justify-content: center;
-  gap: 1rem;
-  margin-top: 1rem;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
+.mass-send-btn:hover {
+  background-color: #9c0f1a;
+}
+
+/* ---------- TABLA ---------- */
+.table-container {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+
+.user-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+  min-width: 860px;
+}
+
+.user-table thead {
+  background-color: #C1121F;
+  color: white;
+  text-align: left;
+}
+
+.user-table th,
+.user-table td {
+  padding: 14px 18px;
+  border-bottom: 1px solid #e6e6e6;
+}
+
+.user-table tbody tr:hover {
+  background-color: #fafafa;
+}
+
+/* ---------- BOTONES ---------- */
 .btn-email,
 .btn-whatsapp {
-  background: transparent;
   border: none;
-  font-size: 1.2rem;
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 1rem;
   cursor: pointer;
-  transition: transform 0.2s ease;
-  padding: 0.4rem;
+  margin-right: 6px;
+  transition: all 0.2s ease;
 }
 
 .btn-email {
-  color: #3b82f6;
-}
-
-.btn-email:hover {
-  transform: scale(1.2);
-  color: #60a5fa;
+  background-color: #007bff;
+  color: white;
 }
 
 .btn-whatsapp {
-  color: #10b981;
+  background-color: #25d366;
+  color: white;
 }
 
+.btn-email:hover,
 .btn-whatsapp:hover {
-  transform: scale(1.2);
-  color: #34d399;
+  transform: scale(1.1);
 }
 
-/* Responsivo adicional */
-@media screen and (max-width: 480px) {
-  .panel-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
+/* ---------- ESTADO / LOADING ---------- */
+.loading-text,
+.no-users-text {
+  text-align: center;
+  margin-top: 40px;
+  font-size: 1.1rem;
+  color: #666;
+}
 
-  .search-box input {
-    width: 100%;
-  }
+/* ---------- PAGINACIÓN ---------- */
+.pagination {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0 8px;
+  gap: 10px;
+  flex-wrap: wrap;
+}
 
-  .user-grid {
-    grid-template-columns: 1fr;
-  }
+.page-btn {
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.page-btn:hover {
+  background-color: #ddd;
+  transform: scale(1.05);
+}
+
+.page-btn.active {
+  background-color: #C1121F;
+  color: white;
+  transform: scale(1.1);
 }
