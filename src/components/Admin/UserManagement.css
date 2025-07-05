@@ -1,0 +1,174 @@
+.user-panel-container {
+  padding: 2rem;
+  background-color: #0f0f0f;
+  min-height: 100vh;
+  color: #f1f1f1;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.panel-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+
+.panel-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  border-left: 5px solid #e63946;
+  padding-left: 12px;
+  color: #ffffff;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.search-box {
+  display: flex;
+  align-items: center;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  padding: 0.5rem 1rem;
+  border-radius: 30px;
+  color: #aaa;
+  transition: all 0.3s ease;
+}
+
+.search-box input {
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f1f1f1;
+  margin-left: 0.5rem;
+  font-size: 0.95rem;
+  width: 180px;
+}
+
+.refresh-btn {
+  background-color: #e63946;
+  color: white;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 1rem;
+}
+
+.refresh-btn:hover {
+  background-color: #c1121f;
+}
+
+.loading-text,
+.no-users-text {
+  text-align: center;
+  margin-top: 3rem;
+  color: #ccc;
+  font-size: 1.1rem;
+}
+
+.user-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+  gap: 1.5rem;
+}
+
+.user-card {
+  background-color: #1a1a1a;
+  border-radius: 15px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #292929;
+}
+
+.user-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(230, 57, 70, 0.3);
+}
+
+.user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 1rem;
+}
+
+.user-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.user-role {
+  background-color: #e63946;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: bold;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+.user-details p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #cccccc;
+}
+
+.user-actions {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.btn-email,
+.btn-whatsapp {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  padding: 0.4rem;
+}
+
+.btn-email {
+  color: #3b82f6;
+}
+
+.btn-email:hover {
+  transform: scale(1.2);
+  color: #60a5fa;
+}
+
+.btn-whatsapp {
+  color: #10b981;
+}
+
+.btn-whatsapp:hover {
+  transform: scale(1.2);
+  color: #34d399;
+}
+
+/* Responsivo adicional */
+@media screen and (max-width: 480px) {
+  .panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .search-box input {
+    width: 100%;
+  }
+
+  .user-grid {
+    grid-template-columns: 1fr;
+  }
+}

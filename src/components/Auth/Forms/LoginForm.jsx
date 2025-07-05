@@ -19,14 +19,16 @@ export function LoginForm() {
   const togglePassword = () => setShowPassword(!showPassword);
 
   const onSubmit = async (data) => {
-
     try {
       const res = await loginUser(data);
-      const { token, user } = res.data;
+      const { access, refresh, user } = res.data;
 
-      localStorage.setItem("token", token);
+      // Guardar tokens y usuario en localStorage
+      localStorage.setItem("accessToken", access);
+      localStorage.setItem("refreshToken", refresh);
+      localStorage.setItem("user", JSON.stringify(user));
 
-      console.log(res.data);
+      console.log("LOGIN EXITOSO", res.data);
 
       Swal.fire({
         icon: "success",
@@ -34,23 +36,23 @@ export function LoginForm() {
         text: `Hola ${user.name || user.email}, has iniciado sesión correctamente.`,
         confirmButtonColor: "#e63946",
       });
-      
+
       setTimeout(() => {
         if (user.role === "admin") {
           navigate("/admin/");
         } else {
           navigate("/");
         }
-      })
+      }, 500);
 
     } catch (error) {
+      console.error("ERROR LOGIN", error);
       Swal.fire({
         icon: "error",
         title: "Error de autenticación",
         text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
         confirmButtonColor: "#e63946",
       });
-
     }
   };
 
@@ -62,6 +64,7 @@ export function LoginForm() {
         placeholder="Correo electrónico"
         className="auth-form-input"
       />
+
       <div className="input-wrapper">
         <input
           {...register("password", { required: true })}
@@ -78,7 +81,11 @@ export function LoginForm() {
         <p className="text-sm text-red-400 -mt-2">Todos los campos son obligatorios</p>
       )}
 
-      <button type="submit" disabled={!isValid} className={!isValid ? "disabled-button" : ""}>
+      <button
+        type="submit"
+        disabled={!isValid}
+        className={!isValid ? "disabled-button" : ""}
+      >
         Entrar
       </button>
     </form>
