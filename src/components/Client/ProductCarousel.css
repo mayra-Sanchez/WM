@@ -126,6 +126,29 @@
   z-index: 1;
 }
 
+.product-card {
+  position: relative;
+}
+
+.wishlist-icon {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.heart-icon {
+  font-size: 20px;
+  color: #888;
+  transition: color 0.3s;
+}
+
+.heart-icon.filled {
+  color: red;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .product-card {
