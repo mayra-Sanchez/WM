@@ -47,6 +47,11 @@ const ProductCarousel = () => {
     return wishlist.some((item) => item.product === productId);
   };
 
+  const getDiscountedVariant = (variants) => {
+    // Buscar la primera variante con descuento
+    return variants.find(variant => parseFloat(variant.discount) > 0) || variants[0]; // Si no hay variante con descuento, tomar la primera
+  };
+
   return (
     <div className="carousels-container">
       {Object.entries(agrupadosPorCategoria).map(([categoria, productos]) => (
@@ -57,71 +62,69 @@ const ProductCarousel = () => {
               <FaChevronLeft />
             </button>
 
-            <div
-              className="carousel"
-              ref={(el) => (carouselRefs.current[categoria] = el)}
-            >
-              {productos.map((prod) => (
-                <div
-                  key={prod.id}
-                  className="product-card"
-                  onClick={() => handleProductClick(prod)}
-                >
-                  
-                  <div
-                    className="wishlist-icon"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      const isLoggedIn = !!localStorage.getItem("accessToken");
-                      if (!isLoggedIn) {
-                        Swal.fire({
-                          icon: "warning",
-                          title: "Debes iniciar sesión",
-                          text: "Inicia sesión para agregar productos a tu Lista de Deseos.",
-                          confirmButtonText: "Cerrar",
-                          confirmButtonColor: "#E63946",
-                        })
-                        return;
-                      }
+            <div className="carousel" ref={(el) => (carouselRefs.current[categoria] = el)}>
+              {productos.map((prod) => {
+                // Obtén la variante con descuento o la primera variante
+                const variant = getDiscountedVariant(prod.variants);
+                
+                return (
+                  <div key={prod.id} className="product-card" onClick={() => handleProductClick(prod)}>
+                    <div
+                      className="wishlist-icon"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const isLoggedIn = !!localStorage.getItem("accessToken");
+                        if (!isLoggedIn) {
+                          Swal.fire({
+                            icon: "warning",
+                            title: "Debes iniciar sesión",
+                            text: "Inicia sesión para agregar productos a tu Lista de Deseos.",
+                            confirmButtonText: "Cerrar",
+                            confirmButtonColor: "#E63946",
+                          });
+                          return;
+                        }
 
-                      const item = wishlist.find((i) => i.product === prod.id);
-                      item ? remove(item.id) : add(prod.id);
-                    }}
-                  >
-                    {isInWishlist(prod.id) ? (
-                      <FaHeart className="heart-icon filled" />
-                    ) : (
-                      <FaRegHeart className="heart-icon" />
-                    )}
-                  </div>
-
-                  {parseFloat(prod.discount) > 0 && (
-                    <div className="discount-badge">
-                      -{Math.round((parseFloat(prod.discount) * 100) / parseFloat(prod.price))}%
+                        const item = wishlist.find((i) => i.product === prod.id);
+                        item ? remove(item.id) : add(prod.id);
+                      }}
+                    >
+                      {isInWishlist(prod.id) ? (
+                        <FaHeart className="heart-icon filled" />
+                      ) : (
+                        <FaRegHeart className="heart-icon" />
+                      )}
                     </div>
-                  )}
 
-                  <img
-                    src={prod.variants[0]?.images[0]?.image}
-                    alt={prod.name}
-                    className="product-image"
-                  />
+                    {/* Mostrar la variante con descuento (si existe) */}
+                    <div key={variant.id}>
+                      {parseFloat(variant.discount) > 0 && (
+                        <div className="discount-badge">
+                          -{variant.discount_label}
+                        </div>
+                      )}
 
-                  <div className="product-info">
-                    <h3>{prod.name}</h3>
-                    {parseFloat(prod.discount) > 0 ? (
-                      <p>
-                        <span className="price-old">${prod.price}</span>{" "}
-                        <span className="price-new">
-                          ${(parseFloat(prod.price) - parseFloat(prod.discount)).toFixed(2)}
-                        </span>
-                      </p>
-                    ) : (
-                      <p className="price">${prod.price}</p>
-                    )}
+                      <img
+                        src={variant.images[0]?.image}
+                        alt={prod.name}
+                        className="product-image"
+                      />
+
+                      <div className="product-info">
+                        <h3>{prod.name}</h3>
+                        {parseFloat(variant.discount) > 0 ? (
+                          <p>
+                            <span className="price-old">${prod.price}</span>{" "}
+                            <span className="price-new">${variant.final_price.toFixed(2)}</span>
+                          </p>
+                        ) : (
+                          <p className="price">${prod.price}</p>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             <button className="arrow right" onClick={() => scrollCarousel(categoria, "right")}>
@@ -139,5 +142,6 @@ const ProductCarousel = () => {
     </div>
   );
 };
+
 
 export default ProductCarousel;

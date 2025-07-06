@@ -96,6 +96,11 @@
   margin-right: 0.5rem;
 }
 
+.normal-price {
+  color: #aaa;
+
+}
+
 .new-price {
   color: #e63946;
   font-weight: bold;

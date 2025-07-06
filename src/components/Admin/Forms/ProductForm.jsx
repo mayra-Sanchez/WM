@@ -178,22 +178,24 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             if (isEdit) {
                 await updateProduct(product.id, payload);
                 Swal.fire({
-                    title: 'Actualizado', 
-                    text: 'Producto actualizado correctamente.', 
+                    title: 'Actualizado',
+                    text: 'Producto actualizado correctamente.',
                     icon: 'success',
                     confirmButtonColor: '#E63946',
                 });
             } else {
                 await createProduct(payload);
                 Swal.fire({
-                    title: 'Creado', 
-                    text: 'Producto creado correctamente.', 
+                    title: 'Creado',
+                    text: 'Producto creado correctamente.',
                     icon: 'success',
                     confirmButtonColor: '#E63946',
                 });
             }
             onClose();
-            onSuccess();
+            if (typeof onSuccess === "function") {
+                onSuccess();
+            }
         } catch (error) {
             console.error("Error añadiendo producto:", error.response?.data || error);
         }
@@ -243,16 +245,27 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                                     required
                                     className="product-form-input"
                                 />
+                                <input
+                                    {...register(`variants.${variantIndex}.discount`)}
+                                    type="number"
+                                    step="0.01"
+                                    placeholder="Descuento (%)"
+                                    className="product-form-input"
+                                />
+                                {/* Mostrar el precio final con descuento */}
+                                <p>Precio final: {watchVariants[variantIndex]?.final_price}</p>
                             </div>
                         ))}
+
                         <div className="variant-actions">
                             <button type="button" onClick={() => {
-                                appendVariant({ color: '' });
+                                appendVariant({ color: '', discount: 0 });  // Inicializa el descuento por defecto en 0
                                 setVariantSizes(prev => ({ ...prev, [variantsFields.length]: [] }));
                             }} className="add-variant-btn">+ Añadir Variante</button>
                         </div>
                     </div>
                 )}
+
 
                 {activeTab === 'tallas' && (
                     <div className="tab-section">

@@ -98,7 +98,7 @@ const ProductsByType = () => {
                       <span className="price-new">
                         $
                         {(
-                          parseFloat(prod.price) - parseFloat(prod.discount)
+                          prod.final_price
                         ).toFixed(2)}
                       </span>
                     </p>
