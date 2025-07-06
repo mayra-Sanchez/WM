@@ -5,6 +5,7 @@ import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import ProductModal from "./ProductModal";
 import "./ProductsByType.css";
+import "../Navbar/Navbar.css"
 
 const ProductsByType = () => {
   const { id } = useParams();

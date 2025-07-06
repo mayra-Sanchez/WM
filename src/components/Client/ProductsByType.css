@@ -3,8 +3,9 @@
   background-color: #fff;
   min-height: 100vh;
   max-width: 1200px;
-  margin: 0 auto;
+  margin: 100px auto 0; /* ✅ este valor evita que el navbar fije y tape el contenido */
 }
+
 
 .category-title {
   font-size: 1.8rem;
