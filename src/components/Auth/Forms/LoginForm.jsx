@@ -9,7 +9,7 @@ import { useAuth } from "../../../contexts/AuthContext";
 
 export function LoginForm() {
   const navigate = useNavigate();
-  const { login } = useAuth(); 
+  const { login } = useAuth();
 
   const {
     register,
@@ -25,65 +25,67 @@ export function LoginForm() {
       const res = await loginUser(data);
       const { access, refresh, user } = res.data;
 
-      login({ access, refresh, user }); 
+      login({ access, refresh, user });
 
       Swal.fire({
         icon: "success",
         title: "¡Bienvenido!",
         text: `Hola ${user.name || user.email}, has iniciado sesión correctamente.`,
         confirmButtonColor: "#e63946",
+      }).then(() => {
+        window.location.reload();
       });
 
-      setTimeout(() => {
-        if (user.role === "admin") {
-          navigate("/admin/");
-        } else {
-          navigate("/");
-        }
-      }, 500);
-    } catch (error) {
-      console.error("ERROR LOGIN", error);
-      Swal.fire({
-        icon: "error",
-        title: "Error de autenticación",
-        text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
-        confirmButtonColor: "#e63946",
-      });
+  setTimeout(() => {
+    if (user.role === "admin") {
+      navigate("/admin/");
+    } else {
+      navigate("/");
     }
+  }, 500);
+} catch (error) {
+  console.error("ERROR LOGIN", error);
+  Swal.fire({
+    icon: "error",
+    title: "Error de autenticación",
+    text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
+    confirmButtonColor: "#e63946",
+  });
+}
   };
 
-  return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+return (
+  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+    <input
+      {...register("email", { required: true })}
+      type="email"
+      placeholder="Correo electrónico"
+      className="auth-form-input"
+    />
+
+    <div className="input-wrapper">
       <input
-        {...register("email", { required: true })}
-        type="email"
-        placeholder="Correo electrónico"
+        {...register("password", { required: true })}
+        type={showPassword ? "text" : "password"}
+        placeholder="Contraseña"
         className="auth-form-input"
       />
+      <span className="eye-icon" onClick={togglePassword}>
+        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+      </span>
+    </div>
 
-      <div className="input-wrapper">
-        <input
-          {...register("password", { required: true })}
-          type={showPassword ? "text" : "password"}
-          placeholder="Contraseña"
-          className="auth-form-input"
-        />
-        <span className="eye-icon" onClick={togglePassword}>
-          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-        </span>
-      </div>
+    {Object.keys(errors).length > 0 && (
+      <p className="text-sm text-red-400 -mt-2">Todos los campos son obligatorios</p>
+    )}
 
-      {Object.keys(errors).length > 0 && (
-        <p className="text-sm text-red-400 -mt-2">Todos los campos son obligatorios</p>
-      )}
-
-      <button
-        type="submit"
-        disabled={!isValid}
-        className={!isValid ? "disabled-button" : ""}
-      >
-        Entrar
-      </button>
-    </form>
-  );
+    <button
+      type="submit"
+      disabled={!isValid}
+      className={!isValid ? "disabled-button" : ""}
+    >
+      Entrar
+    </button>
+  </form>
+);
 }

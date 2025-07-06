@@ -1,4 +1,3 @@
-// ProductModal.jsx mejorado
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Zoom from "react-medium-image-zoom";
@@ -29,6 +28,19 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   const sizes = variant.sizes || [];
 
   const handleAddToCart = () => {
+    const isLoggedIn = !!localStorage.getItem("accessToken");
+    if (!isLoggedIn) {
+      Swal.fire({
+        icon: "warning",
+        title: "Debes iniciar sesión",
+        text: "Inicia sesión para agregar productos al carrito.",
+        background: "#fff",
+        color: "#000",
+        confirmButtonColor: "#e63946",
+      });
+      return;
+    }
+
     if (!selectedSize) {
       Swal.fire({
         icon: "warning",
@@ -76,7 +88,6 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
 
     onClose();
   };
-
 
   return (
     <AnimatePresence>

@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faHeart } from "@fortawesome/free-solid-svg-icons";
+
 import {
   faUser,
   faShoppingCart,
@@ -19,6 +21,7 @@ import logo from "../../assets/logo_wm.png";
 import CartDropdown from "./components/CartDropDown";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
+import WishlistDropdown from "./components/WishlistDropDown";
 
 const Navbar = () => {
   const [categorias, setCategorias] = useState([]);
@@ -90,6 +93,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
+    window.location.reload();
     navigate('/');
   };
 
@@ -168,12 +172,16 @@ const Navbar = () => {
           ) : (
             <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
           )}
+
           <div className="icon-with-badge" onClick={toggleCart}>
             <FontAwesomeIcon icon={faShoppingCart} className="icon" />
             {cartItems.length > 0 && (
               <span className="cart-badge">{cartItems.length}</span>
             )}
           </div>
+
+          <WishlistDropdown />
+
           <FontAwesomeIcon icon={faSearch} className="icon" onClick={toggleSearchBar} />
 
           {showSearch && (
