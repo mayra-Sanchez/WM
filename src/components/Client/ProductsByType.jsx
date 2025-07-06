@@ -4,15 +4,16 @@ import axios from "axios";
 import Navbar from "../Navbar/Navbar";
 import Footer from "../Footer/Footer";
 import ProductModal from "./ProductModal";
-import "./ProductsByType.css"; // Asegúrate de tener estilos
+import "./ProductsByType.css";
 
 const ProductsByType = () => {
   const { id } = useParams();
   const location = useLocation();
-  const isSub = location.pathname.includes("/subcategoria/");
   const [productos, setProductos] = useState([]);
   const [nombre, setNombre] = useState("");
   const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const isSub = location.pathname.includes("/subcategoria/");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,18 +23,25 @@ const ProductsByType = () => {
           axios.get("http://127.0.0.1:8000/products/api/products/"),
         ]);
 
+        const idInt = parseInt(id);
         let nombreActual = "";
         let filtrados = [];
 
         catRes.data.forEach((cat) => {
-          if (!isSub && cat.id === parseInt(id)) {
+          if (cat.id === idInt && !isSub) {
+            // ✅ Categoría principal: incluir también sus subcategorías
             nombreActual = cat.name;
-            filtrados = prodRes.data.filter((p) => p.category === cat.id);
+
+            const subIds = cat.subcategories.map((sub) => sub.id);
+            filtrados = prodRes.data.filter(
+              (p) => p.category === cat.id || subIds.includes(p.category)
+            );
           } else {
+            // ✅ Subcategoría: solo productos con esa categoría
             cat.subcategories.forEach((sub) => {
-              if (sub.id === parseInt(id)) {
+              if (sub.id === idInt) {
                 nombreActual = sub.name;
-                filtrados = prodRes.data.filter((p) => p.subcategory === sub.id);
+                filtrados = prodRes.data.filter((p) => p.category === sub.id);
               }
             });
           }
@@ -47,7 +55,7 @@ const ProductsByType = () => {
     };
 
     fetchData();
-  }, [id, isSub]);
+  }, [id, location.pathname]);
 
   return (
     <>
@@ -65,18 +73,32 @@ const ProductsByType = () => {
                 className="product-card"
                 onClick={() => setSelectedProduct(prod)}
               >
-                <img
-                  src={prod.variants[0]?.images[0]?.image}
-                  alt={prod.name}
-                  className="product-image"
-                />
+                {parseFloat(prod.discount) > 0 && (
+                  <span className="discount-badge">EN DESCUENTO</span>
+                )}
+
+                <div className="product-image-wrapper">
+                  <img
+                    src={
+                      prod.variants?.[0]?.images?.[0]?.image ||
+                      "/img/no-image.jpg"
+                    }
+                    alt={prod.name}
+                    className="product-image"
+                    loading="lazy"
+                  />
+                </div>
+
                 <div className="product-info">
                   <h3>{prod.name}</h3>
                   {parseFloat(prod.discount) > 0 ? (
                     <p>
                       <span className="price-old">${prod.price}</span>{" "}
                       <span className="price-new">
-                        ${(parseFloat(prod.price) - parseFloat(prod.discount)).toFixed(2)}
+                        $
+                        {(
+                          parseFloat(prod.price) - parseFloat(prod.discount)
+                        ).toFixed(2)}
                       </span>
                     </p>
                   ) : (
@@ -87,7 +109,9 @@ const ProductsByType = () => {
             ))}
           </div>
         ) : (
-          <p>No hay productos en esta {isSub ? "subcategoría" : "categoría"}.</p>
+          <p>
+            No hay productos en esta {isSub ? "subcategoría" : "categoría"}.
+          </p>
         )}
       </main>
 
