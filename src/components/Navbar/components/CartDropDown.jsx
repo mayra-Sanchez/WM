@@ -4,7 +4,7 @@ import "./CartDropdown.css";
 import { useCart } from "../../../contexts/CartContext";
 
 const CartDropdown = ({ isOpen, onClose }) => {
-  const { cartItems, fetchCart, removeItem } = useCart();
+  const { cartItems, fetchCart, removeItem, updateItem } = useCart();
 
   useEffect(() => {
     if (isOpen) fetchCart();
@@ -42,7 +42,41 @@ const CartDropdown = ({ isOpen, onClose }) => {
                 <div className="cart-item-details">
                   <h4>Color: {item.variant?.color}</h4>
                   <p>Talla: {item.size?.size}</p>
-                  <p>Cantidad: {item.quantity}</p>
+                  <div className="cart-item-quantity">
+                    <button
+                      className="quantity-btn"
+                      onClick={() => {
+                        if (item.quantity > 1) {
+                          updateItem(item.id, {
+                            quantity: item.quantity - 1,
+                            variant_id: item.variant.id,
+                            size_id: item.size.id,
+                          });
+                        }
+                      }}
+                    >
+                      &minus;
+                    </button>
+
+                    <span className="quantity-display">{item.quantity}</span>
+
+                    <button
+                      className="quantity-btn"
+                      onClick={() => {
+                        if (item.quantity < item.size.stock) {
+                          updateItem(item.id, {
+                            quantity: item.quantity + 1,
+                            variant_id: item.variant.id,
+                            size_id: item.size.id,
+                          });
+                        }
+                      }}
+                      disabled={item.quantity >= item.size.stock}
+                    >
+                      &#43;
+                    </button>
+                  </div>
+
                   <p>Subtotal: ${item.subtotal?.toLocaleString()}</p>
                 </div>
                 <button
@@ -50,7 +84,7 @@ const CartDropdown = ({ isOpen, onClose }) => {
                   onClick={() => removeItem(item.id)}
                   title="Eliminar"
                 >
-                  <FaTrashAlt className="delete-cart-item-icon"/>
+                  <FaTrashAlt className="delete-cart-item-icon" />
                 </button>
               </div>
             ))

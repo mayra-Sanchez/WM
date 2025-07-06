@@ -11,6 +11,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   const [selectedSize, setSelectedSize] = useState(null);
   const [mainImage, setMainImage] = useState(null);
   const [showFullDescription, setShowFullDescription] = useState(false);
+  const [quantity, setQuantity] = useState(1);
   const { addItem } = useCart();
 
   useEffect(() => {
@@ -18,6 +19,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
       setSelectedVariantIndex(0);
       setSelectedSize(null);
       setMainImage(product.variants[0]?.images[0]?.image || null);
+      setQuantity(1);
     }
   }, [product]);
 
@@ -70,7 +72,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
     addItem({
       variant: variant.id,
       size: selectedSizeObj.id,
-      quantity: 1,
+      quantity: quantity,
     });
 
     Swal.fire({
@@ -167,6 +169,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                         setSelectedVariantIndex(idx);
                         setMainImage(v.images[0]?.image || null);
                         setSelectedSize(null);
+                        setQuantity(1);
                       }}
                       className={`color-button ${selectedVariantIndex === idx ? "selected" : ""}`}
                     >
@@ -182,13 +185,67 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                   {sizes.map((s) => (
                     <button
                       key={s.id}
-                      onClick={() => setSelectedSize(s.size)}
+                      onClick={() => {
+                        setSelectedSize(s.size);
+                        setQuantity(1);
+                      }}
                       className={`size-box ${selectedSize === s.size ? "selected" : ""}`}
                     >
                       {s.size}
                     </button>
                   ))}
                 </div>
+              </div>
+
+              <div className="modal-quantity">
+                <strong>Cantidad:</strong>
+                <div className="quantity-control">
+                  <button
+                    type="button"
+                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                    className="qty-btn"
+                  >
+                    &minus;
+                  </button>
+                  <span className="qty-display">{quantity}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const selectedSizeObj = sizes.find(s => s.size === selectedSize);
+                      if (selectedSizeObj && quantity < selectedSizeObj.stock) {
+                        setQuantity(prev => prev + 1);
+                      } else {
+                        Swal.fire({
+                          icon: "warning",
+                          title: "Stock insuficiente",
+                          text: "No puedes agregar más productos que los disponibles.",
+                          background: "#1e1e1e",
+                          color: "#fff",
+                          confirmButtonColor: "#e63946",
+                        });
+                      }
+                    }}
+                    className="qty-btn"
+                    disabled={
+                      (() => {
+                        const selectedSizeObj = sizes.find(s => s.size === selectedSize);
+                        return selectedSizeObj ? quantity >= selectedSizeObj.stock : true;
+                      })()
+                    }
+                  >
+                    &#43;
+                  </button>
+                </div>
+
+                {selectedSize && (() => {
+                  const selectedSizeObj = sizes.find(s => s.size === selectedSize);
+                  return selectedSizeObj && selectedSizeObj.stock <= 5? (
+                    <p className="stock-info stock-low">
+                      Quedan {selectedSizeObj.stock} disponibles
+                    </p>
+                  ) : null;
+                })()}
+
               </div>
 
               <button
