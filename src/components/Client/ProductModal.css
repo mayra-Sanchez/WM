@@ -162,6 +162,48 @@
   cursor: not-allowed;
 }
 
+.modal-quantity {
+  margin: 1rem 0;
+}
+
+.quantity-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.qty-btn {
+  width: 25px;
+  height: 25px;
+  font-size: 15px;
+  font-weight: bold;
+  background-color: #2B2B2B;
+  border: 1px solid #3d3d3d;
+  color: #fff;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.qty-btn:hover {
+  background-color: #e63946;
+}
+
+.qty-display {
+  min-width: 30px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.stock-info {
+  margin-top: 15px;
+  font-size: 14px;
+  color: #e63946;
+}
+
+
 @media (max-width: 768px) {
   .modal-content {
     flex-direction: column;

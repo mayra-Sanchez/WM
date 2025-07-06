@@ -67,7 +67,7 @@ const ProductCarousel = () => {
                   className="product-card"
                   onClick={() => handleProductClick(prod)}
                 >
-                  {/* Wishlist Icon */}
+                  
                   <div
                     className="wishlist-icon"
                     onClick={(e) => {
@@ -95,21 +95,18 @@ const ProductCarousel = () => {
                     )}
                   </div>
 
-                  {/* Discount Badge */}
                   {parseFloat(prod.discount) > 0 && (
                     <div className="discount-badge">
                       -{Math.round((parseFloat(prod.discount) * 100) / parseFloat(prod.price))}%
                     </div>
                   )}
 
-                  {/* Product Image */}
                   <img
                     src={prod.variants[0]?.images[0]?.image}
                     alt={prod.name}
                     className="product-image"
                   />
 
-                  {/* Product Info */}
                   <div className="product-info">
                     <h3>{prod.name}</h3>
                     {parseFloat(prod.discount) > 0 ? (
