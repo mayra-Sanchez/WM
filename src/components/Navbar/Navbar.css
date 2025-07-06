@@ -1,3 +1,4 @@
+/* === TOP BAR CON ANIMACIÓN DESTACADA === */
 .top-bar {
   position: fixed;
   top: 0;
@@ -33,10 +34,10 @@
   }
 }
 
-
+/* === NAVBAR === */
 .navbar {
   position: fixed;
-  top: 27px; /* justo debajo de la top-bar */
+  top: 27px;
   left: 0;
   width: 100%;
   z-index: 9998;
@@ -48,8 +49,6 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-
-/* Logo */
 .navbar-logo img {
   height: 45px;
   cursor: pointer;
@@ -60,7 +59,6 @@
   transform: scale(1.05);
 }
 
-/* Menú principal */
 .navbar-menu {
   list-style: none;
   display: flex;
@@ -77,7 +75,6 @@
   padding: 15px 0;
 }
 
-/* Encabezado categoría */
 .category-header {
   display: flex;
   align-items: center;
@@ -90,7 +87,6 @@
   color: #e63946;
 }
 
-/* Subcategorías */
 .subcategory-list {
   position: absolute;
   top: 100%;
@@ -157,7 +153,6 @@
   transform: rotate(180deg);
 }
 
-/* Íconos y logout */
 .navbar-icons {
   display: flex;
   gap: 18px;
@@ -199,20 +194,28 @@
   background-color: #c92c3b;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-  .navbar-menu.desktop {
-    display: none;
-  }
-
-  .hamburger {
-    display: block;
-  }
-}
-
 .hamburger {
   display: none;
   color: #fff;
   font-size: 1.6rem;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navbar-menu.desktop {
+    display: none;
+  }
+  .hamburger {
+    display: block;
+  }
+}
+
+/* === CONTENIDO DESPUÉS DEL NAVBAR === */
+.page-content {
+  padding-top: 80px; /* top-bar + navbar */
+}
+
+/* Si el home necesita superponer video */
+.fullscreen-home {
+  padding-top: 0 !important;
 }

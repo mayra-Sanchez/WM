@@ -5,12 +5,15 @@ import FeaturesStrip from "../components/caracteristicas/FeaturesStrip";
 import HeroVideo from "../components/video/HeroVideo";
 import ProductCarousel from "../../components/Client/ProductCarousel";
 import WhatsappButton from "../../components/Client/WhatsappButton";
+import './../../components/Navbar/Navbar.css'
 
 const Home = () => {
   return (
     <div>
       <Navbar />
-      <HeroVideo />
+      <div className="page-content fullscreen-home">
+        <HeroVideo />
+      </div>
       <ProductCarousel />
       <FeaturesStrip />
       <WhatsappButton />
