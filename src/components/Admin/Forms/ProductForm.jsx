@@ -17,7 +17,6 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
             name: '',
             description: '',
             price: '',
-            discount: '',
             category: '',
             variants: [],
         },
@@ -140,7 +139,6 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
         }
     };
 
-
     useEffect(() => {
         loadCategories();
 
@@ -220,14 +218,13 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                             <input {...register('name')} placeholder="Nombre" required className="product-form-input" />
                             <input {...register('description')} placeholder="Descripción" required className="product-form-input" />
                             <input type="number" step="0.01" {...register('price')} placeholder="Precio" required className="product-form-input" />
-                            <input type="number" step="0.01" {...register('discount')} placeholder="Descuento" required className="product-form-input" />
+                            <select {...register('category')} required className="product-form-select">
+                                <option value="">Selecciona una categoría</option>
+                                {categories.map(cat => (
+                                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                                ))}
+                            </select>
                         </div>
-                        <select {...register('category')} required className="product-form-select">
-                            <option value="">Selecciona una categoría</option>
-                            {categories.map(cat => (
-                                <option key={cat.id} value={cat.id}>{cat.name}</option>
-                            ))}
-                        </select>
                     </div>
                 )}
 
@@ -265,7 +262,6 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                         </div>
                     </div>
                 )}
-
 
                 {activeTab === 'tallas' && (
                     <div className="tab-section">
@@ -347,7 +343,6 @@ const ProductForm = ({ product, onClose, onSuccess }) => {
                         ))}
                     </div>
                 )}
-
 
                 <div className="actions">
                     <button type="submit">{isEdit ? 'Actualizar' : 'Crear'}</button>

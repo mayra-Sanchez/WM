@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart } from "@fortawesome/free-solid-svg-icons";
-
+import { AnimatePresence, motion } from "framer-motion";
 import {
   faUser,
   faShoppingCart,
@@ -12,7 +11,6 @@ import {
   faChevronDown,
   faChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
-import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout/AuthLayout";
 import ProductModal from "../Client/ProductModal";
@@ -22,6 +20,7 @@ import CartDropdown from "./components/CartDropDown";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
 import WishlistDropdown from "./components/WishlistDropDown";
+import SearchBar from "./components/SearchBar";
 
 const Navbar = () => {
   const [categorias, setCategorias] = useState([]);
@@ -33,13 +32,12 @@ const Navbar = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [productos, setProductos] = useState([]);
-  const [showProductModal, setShowProductModal] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [showProductModal, setShowProductModal] = useState(false);
   const [searchField, setSearchField] = useState("name");
   const navigate = useNavigate();
   const [showCart, setShowCart] = useState(false);
   const { cartItems } = useCart();
-
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -67,22 +65,34 @@ const Navbar = () => {
 
   const toggleSearchBar = () => {
     setShowSearch((prev) => !prev);
-    setSearchTerm("");
-    setFilteredProducts([]);
+    if (!showSearch) {
+      setSearchTerm("");
+      setFilteredProducts([]);
+    }
   };
 
-  const handleSearchChange = (e) => {
-    const term = e.target.value.toLowerCase();
+  const handleSearchChange = (term) => {
     setSearchTerm(term);
 
+    if (!term) {
+      setFilteredProducts([]);
+      return;
+    }
+
     const resultados = productos.filter((product) => {
+      const searchTermLower = term.toLowerCase();
+
       if (searchField === "name") {
-        return product.name?.toLowerCase().includes(term);
+        return product.name?.toLowerCase().includes(searchTermLower);
       } else if (searchField === "color") {
-        return product.variants?.some((variant) => variant.color?.toLowerCase().includes(term));
+        return product.variants?.some(variant =>
+          variant.color?.toLowerCase().includes(searchTermLower)
+        );
       } else if (searchField === "size") {
-        return product.variants?.some((variant) =>
-          variant.sizes?.some((size) => size.size?.toLowerCase().includes(term))
+        return product.variants?.some(variant =>
+          variant.sizes?.some(size =>
+            size.size?.toLowerCase().includes(searchTermLower)
+          )
         );
       }
       return false;
@@ -118,6 +128,12 @@ const Navbar = () => {
 
   const toggleCart = () => setShowCart(!showCart);
 
+  const handleProductSelect = (product) => {
+    setSelectedProduct(product);
+    setShowProductModal(true);
+    setShowSearch(false);
+  };
+
   return (
     <header>
       <div className="top-bar">
@@ -125,14 +141,20 @@ const Navbar = () => {
       </div>
 
       <nav className="navbar">
-        <div className="navbar-logo" onClick={() => navigate("/")}> <img src={logo} alt="Logo WM" /> </div>
+        <div className="navbar-logo" onClick={() => navigate("/")}>
+          <img src={logo} alt="Logo WM" />
+        </div>
 
         <div className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
           <FontAwesomeIcon icon={menuOpen ? faTimes : faBars} />
         </div>
 
         <ul className="navbar-menu desktop">
-          <motion.li whileHover={{ scale: 1.1 }} onClick={() => navigate("/")}>INICIO</motion.li>
+          <div className="category-header">
+            <motion.li whileHover={{ scale: 1.1 }} onClick={() => navigate("/")}>
+              INICIO
+            </motion.li>
+          </div>
           {categorias.map((cat) => (
             <motion.li
               key={cat.id}
@@ -163,14 +185,21 @@ const Navbar = () => {
           ))}
         </ul>
 
-        <div className="navbar-icons" style={{ position: "relative" }}>
+        <div className="navbar-icons">
           {user ? (
             <div className="user-info">
               <span>Hola, {user.name}</span>
-              <button onClick={handleLogout} className="logout-btn">Cerrar sesión</button>
+              <button onClick={handleLogout} className="logout-btn">
+                Cerrar sesión
+              </button>
             </div>
+
           ) : (
-            <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
+            <FontAwesomeIcon
+              icon={faUser}
+              className="icon"
+              onClick={toggleAuthModal}
+            />
           )}
 
           <div className="icon-with-badge" onClick={toggleCart}>
@@ -182,42 +211,32 @@ const Navbar = () => {
 
           <WishlistDropdown />
 
-          <FontAwesomeIcon icon={faSearch} className="icon" onClick={toggleSearchBar} />
+          <FontAwesomeIcon
+            icon={faSearch}
+            className="icon"
+            onClick={toggleSearchBar}
+          />
 
           {showSearch && (
-            <div className="search-bar-container">
-              <select value={searchField} onChange={(e) => setSearchField(e.target.value)}>
-                <option value="nombre">Nombre</option>
-                <option value="color">Color</option>
-                <option value="talla">Talla</option>
-              </select>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={handleSearchChange}
-                placeholder={`Buscar por ${searchField}...`}
-              />
-              {filteredProducts.length > 0 && (
-                <div className="search-results">
-                  {filteredProducts.map((product) => (
-                    <p
-                      key={product.id}
-                      onClick={() => {
-                        setSelectedProduct(product);
-                        setShowProductModal(true);
-                        setShowSearch(false);
-                      }}
-                    >
-                      {product.name}
-                    </p>
-                  ))}
-                </div>
-              )}
-            </div>
+            <SearchBar
+              searchField={searchField}
+              setSearchField={setSearchField}
+              searchTerm={searchTerm}
+              setSearchTerm={handleSearchChange} // Corregido aquí
+              filteredProducts={filteredProducts}
+              onResultClick={(product) => {
+                setSelectedProduct(product);
+                setShowProductModal(true);
+                setShowSearch(false);
+              }}
+              isActive={showSearch}
+              onClose={() => setShowSearch(false)}
+            />
           )}
         </div>
       </nav>
 
+      {/* Resto del código permanece igual */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
@@ -235,30 +254,50 @@ const Navbar = () => {
               transition={{ duration: 0.3 }}
               onClick={(e) => e.stopPropagation()}
             >
-              <li onClick={() => { setMenuOpen(false); navigate("/"); }}>INICIO</li>
+
+              <li onClick={() => { setMenuOpen(false); navigate("/"); }}>
+                <div className="category-header">
+                  INICIO
+                </div>
+
+              </li>
+
+
+
               {categorias.map((cat) => (
                 <li key={cat.id}>
                   <div
                     className="category-header"
-                    onClick={() => {
-                      toggleSubMenu(cat.id);
-                      goToCategory(cat.id);
-                    }}
+                    onClick={() => toggleSubMenu(cat.id)}
                   >
-                    {cat.name.toUpperCase()} {cat.subcategories.length > 0 && (
+                    {cat.name.toUpperCase()}{" "}
+                    {cat.subcategories.length > 0 && (
                       <FontAwesomeIcon
                         icon={subOpen[cat.id] ? faChevronUp : faChevronDown}
                         className="dropdown-icon"
                       />
                     )}
                   </div>
+
                   {cat.subcategories.length > 0 && subOpen[cat.id] && (
                     <ul className="subcategory-list">
+                      <li
+                        className="subcategory-item"
+                        onClick={() => {
+                          goToCategory(cat.id);
+                          setMenuOpen(false);
+                        }}
+                      >
+                        Ver todo
+                      </li>
                       {cat.subcategories.map((sub) => (
                         <li
                           key={sub.id}
                           className="subcategory-item"
-                          onClick={() => goToSubcategory(sub.id)}
+                          onClick={() => {
+                            goToSubcategory(sub.id);
+                            setMenuOpen(false);
+                          }}
                         >
                           {sub.name}
                         </li>
@@ -271,6 +310,7 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
 
       <AnimatePresence>
         {showAuthModal && (
@@ -291,6 +331,16 @@ const Navbar = () => {
               <AuthLayout onClose={toggleAuthModal} />
             </motion.div>
           </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {showProductModal && selectedProduct && (
+          <ProductModal
+            product={selectedProduct}
+            isOpen={showProductModal}
+            onClose={() => setShowProductModal(false)}
+          />
         )}
       </AnimatePresence>
 

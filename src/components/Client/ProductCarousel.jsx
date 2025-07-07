@@ -3,7 +3,7 @@ import axios from "axios";
 import ProductModal from "./ProductModal";
 import "./ProductCarousel.css";
 import { FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart } from "react-icons/fa";
-import { useWishlist } from "../../contexts/WishlistContext"; // ajusta si tu path es diferente
+import { useWishlist } from "../../contexts/WishlistContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 
@@ -11,23 +11,52 @@ const ProductCarousel = () => {
   const [agrupadosPorCategoria, setAgrupadosPorCategoria] = useState({});
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [loading, setLoading] = useState(true);
   const carouselRefs = useRef({});
 
   const { wishlist, add, remove } = useWishlist();
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get("http://localhost:8000/products/api/products")
-      .then(res => {
+    const fetchData = async () => {
+      try {
+        const [catRes, prodRes] = await Promise.all([
+          axios.get("http://localhost:8000/products/api/categories/"),
+          axios.get("http://localhost:8000/products/api/products"),
+        ]);
+
+        const categoriasPrincipales = catRes.data.filter(cat => cat.parent === null);
         const agrupados = {};
-        res.data.forEach((producto) => {
-          const categoria = producto.category_detail;
-          if (!agrupados[categoria]) agrupados[categoria] = [];
-          agrupados[categoria].push(producto);
+
+        categoriasPrincipales.forEach((cat) => {
+          const subIds = cat.subcategories.map((sub) => sub.id);
+          const productos = prodRes.data.filter(
+            (p) => p.category === cat.id || subIds.includes(p.category)
+          );
+          if (productos.length > 0) {
+            agrupados[cat.name] = { productos, id: cat.id };
+          }
         });
+
         setAgrupadosPorCategoria(agrupados);
-      })
-      .catch(err => console.error("Error al obtener productos:", err));
+      } catch (err) {
+        console.error("Error al obtener productos:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    const autoplay = setInterval(() => {
+      Object.keys(carouselRefs.current).forEach((categoria) => {
+        scrollCarousel(categoria, "right");
+      });
+    }, 8000);
+
+    return () => clearInterval(autoplay);
   }, []);
 
   const handleProductClick = (product) => {
@@ -38,74 +67,93 @@ const ProductCarousel = () => {
   const scrollCarousel = (categoria, direction) => {
     const scrollAmount = 300;
     const ref = carouselRefs.current[categoria];
-    if (ref) {
-      ref.scrollBy({ left: direction === "left" ? -scrollAmount : scrollAmount, behavior: "smooth" });
-    }
+    if (!ref) return;
+    ref.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth",
+    });
   };
 
-  const isInWishlist = (productId) => {
-    return wishlist.some((item) => item.product === productId);
-  };
+  const isInWishlist = (productId) => wishlist.some(item => item.product === productId);
 
   const getDiscountedVariant = (variants) => {
-    // Buscar la primera variante con descuento
-    return variants.find(variant => parseFloat(variant.discount) > 0) || variants[0]; // Si no hay variante con descuento, tomar la primera
+    return variants.find(variant => parseFloat(variant.discount) > 0) || variants[0];
   };
 
   return (
     <div className="carousels-container">
-      {Object.entries(agrupadosPorCategoria).map(([categoria, productos]) => (
-        <div key={categoria} className="carousel-wrapper">
-          <h2 className="carousel-title">{categoria}</h2>
-          <div className="carousel-container">
-            <button className="arrow left" onClick={() => scrollCarousel(categoria, "left")}>
-              <FaChevronLeft />
-            </button>
+      {loading ? (
+        <div className="carousel-wrapper">
+          <div className="carousel-header"><div className="carousel-title">Cargando...</div></div>
+          <div className="carousel">
+            {[...Array(4)].map((_, idx) => (
+              <div className="skeleton-card" key={idx}>
+                <div className="skeleton-image" />
+                <div className="skeleton-info">
+                  <div className="skeleton-line" />
+                  <div className="skeleton-line short" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        Object.entries(agrupadosPorCategoria).map(([categoria, { productos, id }]) => (
+          <div key={categoria} className="carousel-wrapper">
+            <div className="carousel-header">
+              <h2 className="carousel-title">{categoria}</h2>
+              <button
+                className="view-more"
+                onClick={() => navigate(`/categoria/${id}`)}
+              >
+                Ver más
+              </button>
+            </div>
 
-            <div className="carousel" ref={(el) => (carouselRefs.current[categoria] = el)}>
-              {productos.map((prod) => {
-                // Obtén la variante con descuento o la primera variante
-                const variant = getDiscountedVariant(prod.variants);
-                
-                return (
-                  <div key={prod.id} className="product-card" onClick={() => handleProductClick(prod)}>
-                    <div
-                      className="wishlist-icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        const isLoggedIn = !!localStorage.getItem("accessToken");
-                        if (!isLoggedIn) {
-                          Swal.fire({
-                            icon: "warning",
-                            title: "Debes iniciar sesión",
-                            text: "Inicia sesión para agregar productos a tu Lista de Deseos.",
-                            confirmButtonText: "Cerrar",
-                            confirmButtonColor: "#E63946",
-                          });
-                          return;
-                        }
+            <div className="carousel-container">
+              <button className="arrow left" onClick={() => scrollCarousel(categoria, "left")}>
+                <FaChevronLeft />
+              </button>
 
-                        const item = wishlist.find((i) => i.product === prod.id);
-                        item ? remove(item.id) : add(prod.id);
-                      }}
-                    >
-                      {isInWishlist(prod.id) ? (
-                        <FaHeart className="heart-icon filled" />
-                      ) : (
-                        <FaRegHeart className="heart-icon" />
-                      )}
-                    </div>
+              <div className="carousel" ref={(el) => (carouselRefs.current[categoria] = el)}>
+                {productos.map((prod) => {
+                  const variant = getDiscountedVariant(prod.variants);
 
-                    {/* Mostrar la variante con descuento (si existe) */}
-                    <div key={variant.id}>
+                  return (
+                    <div key={prod.id} className="product-card" onClick={() => handleProductClick(prod)}>
+                      <div
+                        className="wishlist-icon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const isLoggedIn = !!localStorage.getItem("accessToken");
+                          if (!isLoggedIn) {
+                            Swal.fire({
+                              icon: "warning",
+                              title: "Debes iniciar sesión",
+                              text: "Inicia sesión para agregar productos a tu Lista de Deseos.",
+                              confirmButtonText: "Cerrar",
+                              confirmButtonColor: "#E63946",
+                            });
+                            return;
+                          }
+                          const item = wishlist.find((i) => i.product === prod.id);
+                          item ? remove(item.id) : add(prod.id);
+                        }}
+                      >
+                        {isInWishlist(prod.id) ? (
+                          <FaHeart className="heart-icon filled" />
+                        ) : (
+                          <FaRegHeart className="heart-icon" />
+                        )}
+                      </div>
+
                       {parseFloat(variant.discount) > 0 && (
-                        <div className="discount-badge">
-                          -{variant.discount_label}
-                        </div>
+                        <div className="discount-badge">-{variant.discount_label}</div>
                       )}
 
                       <img
-                        src={variant.images[0]?.image}
+                        loading="lazy"
+                        src={variant.images[0]?.image || "/img/no-image.jpg"}
                         alt={prod.name}
                         className="product-image"
                       />
@@ -122,17 +170,17 @@ const ProductCarousel = () => {
                         )}
                       </div>
                     </div>
-                  </div>
-                );
-              })}
-            </div>
+                  );
+                })}
+              </div>
 
-            <button className="arrow right" onClick={() => scrollCarousel(categoria, "right")}>
-              <FaChevronRight />
-            </button>
+              <button className="arrow right" onClick={() => scrollCarousel(categoria, "right")}>
+                <FaChevronRight />
+              </button>
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      )}
 
       <ProductModal
         product={selectedProduct}
@@ -142,6 +190,5 @@ const ProductCarousel = () => {
     </div>
   );
 };
-
 
 export default ProductCarousel;
