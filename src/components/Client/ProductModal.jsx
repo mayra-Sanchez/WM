@@ -16,9 +16,13 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
 
   useEffect(() => {
     if (product && product.variants.length > 0) {
-      setSelectedVariantIndex(0);
+      // Buscar la primera variante con descuento
+      const discountedVariantIndex = product.variants.findIndex(variant => parseFloat(variant.discount) > 0);
+      
+      // Si se encuentra una variante con descuento, seleccionarla, de lo contrario, seleccionar la primera variante
+      setSelectedVariantIndex(discountedVariantIndex >= 0 ? discountedVariantIndex : 0);
       setSelectedSize(null);
-      setMainImage(product.variants[0]?.images[0]?.image || null);
+      setMainImage(product.variants[discountedVariantIndex >= 0 ? discountedVariantIndex : 0]?.images[0]?.image || null);
       setQuantity(1);
     }
   }, [product]);
@@ -136,15 +140,16 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
             <div className="modal-right">
               <h2>{product.name}</h2>
               <div className="modal-price">
-                {parseFloat(product.discount) > 0 ? (
+                {variant.discount && parseFloat(variant.discount) > 0 ? (
                   <>
                     <span className="old-price">${product.price}</span>
-                    <span className="new-price">
-                      ${(+product.price - +product.discount).toFixed(2)}
-                    </span>
+                    <span className="new-price">${variant.final_price.toFixed(2)}</span>
+                    <div className="discount-badge">
+                      -{variant.discount_label}
+                    </div>
                   </>
                 ) : (
-                  <span className="new-price">${product.price}</span>
+                  <span className="normal-price">{product.price}</span>
                 )}
               </div>
 
@@ -239,7 +244,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
 
                 {selectedSize && (() => {
                   const selectedSizeObj = sizes.find(s => s.size === selectedSize);
-                  return selectedSizeObj && selectedSizeObj.stock <= 5? (
+                  return selectedSizeObj && selectedSizeObj.stock <= 5 ? (
                     <p className="stock-info stock-low">
                       Quedan {selectedSizeObj.stock} disponibles
                     </p>

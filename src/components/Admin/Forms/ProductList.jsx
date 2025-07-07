@@ -128,6 +128,7 @@ const ProductList = () => {
                         setShowModal(false);
                         loadProducts();
                     }}
+                    onSuccess={loadProducts}
                 />
             </Modal>
         </div>

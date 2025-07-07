@@ -1,27 +1,67 @@
+/* CONTENEDOR GENERAL */
 .products-container {
-  padding: 2rem 2rem;
+  padding: 2rem;
   background-color: #fff;
   min-height: 100vh;
-  max-width: 1200px;
-  margin: 100px auto 0; /* ✅ este valor evita que el navbar fije y tape el contenido */
+  margin: 100px auto 0; /* espacio superior para el navbar */
 }
 
-
+/* TÍTULO DE CATEGORÍA */
 .category-title {
   font-size: 1.8rem;
-  margin-bottom: 1.5rem;
+  margin-bottom: 2.5rem;
   text-transform: uppercase;
   color: #222;
   border-left: 5px solid #cc0000;
   padding-left: 15px;
 }
 
+/* SUBCATEGORÍAS */
+.subcategories-container {
+  margin-bottom: 2rem;
+  background-color: #f9f9f9;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid #cc0000;
+  border-radius: 12px;
+}
+
+.subcategories-title {
+  font-weight: bold;
+  margin-bottom: 0.8rem;
+  color: #444;
+  font-size: 1rem;
+}
+
+.subcategories-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.subcategory-chip {
+  background-color: #cc0000;
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1.2rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.3s, transform 0.2s;
+}
+
+.subcategory-chip:hover {
+  background-color: #a00000;
+  transform: scale(1.05);
+}
+
+/* GRID DE PRODUCTOS */
 .product-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
   gap: 1.5rem;
 }
 
+/* CARD DE PRODUCTO */
 .product-card {
   background-color: #fff;
   border-radius: 12px;
@@ -36,6 +76,12 @@
   transform: translateY(-5px);
 }
 
+/* IMAGEN DEL PRODUCTO */
+.product-image-wrapper {
+  width: 100%;
+  overflow: hidden;
+}
+
 .product-image {
   width: 100%;
   height: 220px;
@@ -47,6 +93,7 @@
   transform: scale(1.05);
 }
 
+/* INFO DEL PRODUCTO */
 .product-info {
   padding: 1rem;
   text-align: center;
@@ -62,6 +109,7 @@
   overflow: hidden;
 }
 
+/* PRECIO */
 .price {
   font-size: 1rem;
   font-weight: 600;
@@ -81,6 +129,7 @@
   font-size: 1rem;
 }
 
+/* DESCUENTO */
 .discount-badge {
   position: absolute;
   top: 10px;
@@ -92,34 +141,6 @@
   border-radius: 4px;
   font-weight: bold;
   z-index: 2;
-}
-
-/* PAGINACIÓN */
-.pagination {
-  margin-top: 2rem;
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.page-btn {
-  padding: 8px 12px;
-  background-color: #eee;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.2s ease;
-}
-
-.page-btn:hover {
-  background-color: #ddd;
-}
-
-.page-btn.active {
-  background-color: #cc0000;
-  color: #fff;
 }
 
 /* RESPONSIVE */
@@ -136,6 +157,11 @@
 
   .product-image {
     height: 180px;
+  }
+
+  .subcategory-chip {
+    font-size: 0.85rem;
+    padding: 0.4rem 1rem;
   }
 }
 
@@ -159,5 +185,9 @@
 
   .price-old {
     font-size: 0.85rem;
+  }
+
+  .subcategory-chip {
+    padding: 0.35rem 0.9rem;
   }
 }
