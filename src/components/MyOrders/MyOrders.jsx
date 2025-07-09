@@ -147,7 +147,7 @@ const MyOrders = () => {
       case "DELIVERED":
         return <FiCheckCircle {...iconProps} style={{ color: "#10B981" }} />;
       case "CANCELLED":
-        return <FiXCircleQuintana Roo Circle {...iconProps} style={{ color: "#EF4444" }} />;
+        <FiXCircle {...iconProps} style={{ color: "#EF4444" }} />;
       default:
         return <FiPackage {...iconProps} />;
     }
@@ -339,12 +339,7 @@ const MyOrders = () => {
                 >
                   <FiChevronLeft />
                 </button>
-
-                <div className="page-indicator">
-                  Página <span className="current-page">{currentPage}</span> de{" "}
-                  <span className="total-pages">{totalPages}</span>
-                </div>
-
+                ...
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
@@ -354,6 +349,7 @@ const MyOrders = () => {
                   <FiChevronRight />
                 </button>
               </div>
+
             )}
           </>
         )}

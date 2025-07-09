@@ -4,15 +4,24 @@ import { useNavigate } from "react-router-dom";
 import { createOrder } from "../../api/Orders";
 import { useAuth } from "../../contexts/AuthContext";
 import { useCart } from "../../contexts/CartContext";
-import { FiUser, FiMail, FiPhone, FiMapPin } from "react-icons/fi";
+import {
+  FiUser,
+  FiMail,
+  FiPhone,
+  FiMapPin,
+  FiShoppingBag,
+  FiShoppingCart,
+} from "react-icons/fi";
 import DepartamentCitySelect from "./DepartmentCitySelection";
-import './OrderSummary.css';
+import CheckoutSteps from "./CheckoutSteps";
+import "./OrderSummary.css";
 
 const OrderSummary = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { cartItems, fetchCart } = useCart();
   const [loading, setLoading] = useState(false);
+  const [currentStep] = useState(2);
 
   const [formData, setFormData] = useState({
     direccion: "",
@@ -21,12 +30,12 @@ const OrderSummary = () => {
   });
 
   useEffect(() => {
-    fetchCart();
-  }, [fetchCart]);
-
-  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => {
+    fetchCart();
+  }, [fetchCart]);
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,86 +85,133 @@ const OrderSummary = () => {
     }
   };
 
+  const subtotal =
+    cartItems?.reduce(
+      (acc, item) => acc + item.variant.final_price * item.quantity,
+      0
+    ) || 0;
+
+  const envio = subtotal >= 200000 ? 0 : 10000;
+  const totalConEnvio = subtotal + envio;
+
   if (!cartItems) return <p>Cargando carrito...</p>;
 
-  const total = cartItems.reduce(
-    (acc, item) => acc + item.variant.final_price * item.quantity,
-    0
-  );
-
   return (
-    <div className="checkout-container">
-      <h2 className="checkout-title">FINALIZA TU PEDIDO</h2>
+    <div className="order-wrapper">
+      <div className="order-header">
+        <h2>Finaliza tu compra</h2>
+        <CheckoutSteps currentStep={currentStep} />
+      </div>
 
-      <div className="checkout-grid">
-        <div className="checkout-form">
-          <h3>Datos para el envío</h3>
+      <div className="order-content">
+        <div className="order-form">
+          <h3>
+            <FiUser /> Información de envío
+          </h3>
 
-          <div className="input-group">
-            <FiUser className="input-icon" />
-            <input type="text" value={user?.name || ""} disabled />
+          <div className="info-block">
+            <div className="input-icon-group">
+              <FiUser />
+              <input type="text" value={user?.name || ""} disabled />
+            </div>
+            <div className="input-icon-group">
+              <FiMail />
+              <input type="email" value={user?.email || ""} disabled />
+            </div>
+            <div className="input-icon-group">
+              <FiPhone />
+              <input type="text" value={user?.phone_number || ""} disabled />
+            </div>
           </div>
 
-          <div className="input-group">
-            <FiMail className="input-icon" />
-            <input type="email" value={user?.email || ""} disabled />
-          </div>
+          <h4>
+            <FiMapPin /> Dirección
+          </h4>
 
-          <div className="input-group">
-            <FiPhone className="input-icon" />
-            <input type="text" value={user?.phone_number || ""} disabled />
-          </div>
-
-          <div className="input-group">
-            <FiMapPin className="input-icon" />
-            <input
-              type="text"
-              name="direccion"
-              placeholder="Dirección de entrega"
-              value={formData.direccion}
-              onChange={handleInputChange}
-            />
+          <div className="input-label">
+            <label>Dirección completa</label>
+            <div className="input-icon-group">
+              <FiMapPin />
+              <input
+                type="text"
+                name="direccion"
+                placeholder="Ej: Calle 123 # 4-56"
+                value={formData.direccion}
+                onChange={handleInputChange}
+              />
+            </div>
           </div>
 
           <DepartamentCitySelect
-            onChange={(values) => setFormData((prev) => ({ ...prev, ...values }))}
+            onChange={(values) =>
+              setFormData((prev) => ({ ...prev, ...values }))
+            }
           />
 
           <button
+            className={`btn-confirm ${envio === 0 ? "free-shipping" : ""}`}
             onClick={handleConfirmOrder}
             disabled={loading || cartItems.length === 0}
           >
-            {loading ? "Procesando..." : "Confirmar Pedido"}
+            {loading
+              ? "Procesando..."
+              : `Confirmar y pagar $${totalConEnvio.toLocaleString()} ${
+                  envio === 0 ? "(Envío gratis)" : ""
+                }`}
           </button>
         </div>
 
-        <div className="checkout-cart">
-          <h3>Resumen del pedido</h3>
+        <div className="order-summary-box">
+          <h3>
+            <FiShoppingBag /> Resumen de compra
+          </h3>
+          <p>{cartItems.length} artículo(s)</p>
 
           {cartItems.length === 0 ? (
-            <p className="empty-summary">Tu carrito está vacío.</p>
+            <div className="empty-cart">
+              <FiShoppingCart size={36} />
+              <p>Tu carrito está vacío</p>
+              <button onClick={() => navigate("/")}>Seguir comprando</button>
+            </div>
           ) : (
             <>
-              {cartItems.map((item, idx) => (
-                <div key={idx} className="checkout-item">
-                  <img
-                    src={item.variant.images?.[0]?.image || "/default-product.jpg"}
-                    alt={item.variant.color}
-                  />
-                  <div>
-                    <p className="item-name">{item.product_name}</p>
-                    <p className="item-checkout-detail">Color: {item.variant.color}</p>
-                    <p className="item-checkout-detail">Talla: {item.size.size}</p>
-                    <p className="item-checkout-detail">Cantidad: {item.quantity}</p>
-                    <p className="item-price">
-                      ${item.variant.final_price.toLocaleString()}
-                    </p>
+              <div className="order-items">
+                {cartItems.map((item, idx) => (
+                  <div key={idx} className="order-item">
+                    <img
+                      src={
+                        item.variant.images?.[0]?.image ||
+                        "/default-product.jpg"
+                      }
+                      alt={item.product_name}
+                    />
+                    <div className="item-data">
+                      <strong>{item.product_name}</strong>
+                      <small>
+                        Color: {item.variant.color} | Talla: {item.size.size}
+                      </small>
+                      <span>
+                        ${item.variant.final_price.toLocaleString()} x{" "}
+                        {item.quantity}
+                      </span>
+                    </div>
                   </div>
+                ))}
+              </div>
+
+              <div className="total-block">
+                <div className="row">
+                  <span>Subtotal</span>
+                  <span>${subtotal.toLocaleString()}</span>
                 </div>
-              ))}
-              <div className="checkout-total">
-                <span>Total:</span>
-                <strong>${total.toLocaleString()}</strong>
+                <div className="row">
+                  <span>Envío</span>
+                  <span>{envio === 0 ? "Gratis" : `$${envio.toLocaleString()}`}</span>
+                </div>
+                <div className="row total">
+                  <strong>Total</strong>
+                  <strong>${totalConEnvio.toLocaleString()}</strong>
+                </div>
               </div>
             </>
           )}

@@ -6,11 +6,9 @@ import OrderSummary from "./OderSummary";
 const Checkout = () => {
     return(
         <div>
-            <Navbar />
             <div className="checkout">
                 <OrderSummary />
             </div>
-           <Footer />
         </div>
     );
 };

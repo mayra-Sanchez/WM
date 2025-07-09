@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { FaCity } from "react-icons/fa";
 import { FaMapLocationDot } from "react-icons/fa6";
 import { getCitiesDepartments, getDepartments } from '../../api/Colombia';
+import './DepartmentCitySelection.css';
 
 const DepartamentCitySelect = ({ onChange }) => {
     const [departments, setDepartments] = useState([]);
@@ -38,38 +39,43 @@ const DepartamentCitySelect = ({ onChange }) => {
         });
     };
 
-
     return (
-        <>
-            <div className='input-group'>
-                <FaMapLocationDot className='input-icon' />
-                <select
-                    className='select-order-group'
-                    onChange={handleDepartmentChange}
-                    value={departmentId}
-                >
-                    <option value="">Selecciona un departamento</option>
-                    {departments.map(dep => (
-                        <option key={dep.id} value={dep.id}>{dep.name}</option>
-                    ))}
-                </select>
+        <div className="select-wrapper">
+            <div className="input-group with-label">
+                <label>Departamento</label>
+                <div className="input-wrapper">
+                    <FaMapLocationDot className="input-icon" />
+                    <select
+                        className="styled-select"
+                        onChange={handleDepartmentChange}
+                        value={departmentId}
+                    >
+                        <option value="">Selecciona un departamento</option>
+                        {departments.map(dep => (
+                            <option key={dep.id} value={dep.id}>{dep.name}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
 
-            <div className='input-group'>
-                <FaCity className='input-icon' />
-                <select
-                    className='select-order-group'
-                    onChange={handleCityChange}
-                    value={city}
-                    disabled={cities.length === 0}
-                >
-                    <option value="">Selecciona una ciudad</option>
-                    {cities.map(c => (
-                        <option key={c.id} value={c.name}>{c.name}</option>
-                    ))}
-                </select>
+            <div className="input-group with-label">
+                <label>Ciudad</label>
+                <div className="input-wrapper">
+                    <FaCity className="input-icon" />
+                    <select
+                        className="styled-select"
+                        onChange={handleCityChange}
+                        value={city}
+                        disabled={cities.length === 0}
+                    >
+                        <option value="">Selecciona una ciudad</option>
+                        {cities.map(c => (
+                            <option key={c.id} value={c.name}>{c.name}</option>
+                        ))}
+                    </select>
+                </div>
             </div>
-        </>
+        </div>
     );
 };
 
