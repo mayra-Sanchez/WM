@@ -1,20 +1,93 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useMemo } from "react";
+import axios from "axios";
 import Footer from "../Footer/Footer";
 import Navbar from "../Navbar/Navbar";
 import { getOrders, updateOrderStatus } from "../../api/Orders";
 import Swal from "sweetalert2";
+import {
+  FiPackage,
+  FiCalendar,
+  FiMapPin,
+  FiDollarSign,
+  FiAlertCircle,
+  FiCheckCircle,
+  FiTruck,
+  FiXCircle,
+  FiChevronLeft,
+  FiChevronRight,
+  FiSearch,
+  FiFilter,
+  FiRefreshCw
+} from "react-icons/fi";
 import "./MyOrders.css";
+
+const ITEMS_PER_PAGE = 5;
+const STATUS_OPTIONS = [
+  { value: "ALL", label: "Todos" },
+  { value: "ACTIVE", label: "Activos" },
+  { value: "PENDING", label: "Pendientes" },
+  { value: "PAID", label: "Pagados" },
+  { value: "SHIPPED", label: "Enviados" },
+  { value: "DELIVERED", label: "Entregados" },
+  { value: "CANCELLED", label: "Cancelados" },
+];
 
 const MyOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [allImages, setAllImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filter, setFilter] = useState("ALL");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
+  // Dynamic padding to clear top-bar and navbar
+  useEffect(() => {
+    const adjustPadding = () => {
+      const topBar = document.querySelector('.top-bar');
+      const navbar = document.querySelector('.navbar');
+      const myOrdersWrapper = document.querySelector('.my-orders-wrapper');
+      if (topBar && navbar && myOrdersWrapper) {
+        const topBarHeight = topBar.offsetHeight;
+        const navbarHeight = navbar.offsetHeight;
+        const totalHeight = topBarHeight + navbarHeight + 16; // Add 16px buffer
+        myOrdersWrapper.style.paddingTop = `${totalHeight}px`;
+      }
+    };
+
+    adjustPadding();
+    window.addEventListener('resize', adjustPadding);
+    return () => window.removeEventListener('resize', adjustPadding);
+  }, []);
+
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const [ordersRes, imagesRes] = await Promise.all([
+        getOrders(),
+        axios.get("http://localhost:8000/products/api/images/"),
+      ]);
+      setOrders(ordersRes.data);
+      setAllImages(imagesRes.data);
+    } catch (err) {
+      console.error("Error fetching data:", err);
+      setError("No se pudieron cargar los pedidos. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
+      setIsRefreshing(false);
+    }
+  }, []);
 
   useEffect(() => {
-    async function loadMyOrders() {
-      const res = await getOrders();
-      setOrders(res.data);
-    }
-    loadMyOrders();
-  }, []);
+    fetchData();
+  }, [fetchData]);
+
+  const handleRefresh = () => {
+    setIsRefreshing(true);
+    fetchData();
+  };
 
   const handleCancel = async (orderId) => {
     const confirm = await Swal.fire({
@@ -23,7 +96,11 @@ const MyOrders = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, cancelar",
-      cancelButtonText: "No",
+      cancelButtonText: "No, mantener",
+      confirmButtonColor: "#ff4d4d",
+      cancelButtonColor: "#6c757d",
+      reverseButtons: true,
+      focusCancel: true,
     });
 
     if (confirm.isConfirmed) {
@@ -36,72 +113,416 @@ const MyOrders = () => {
               : order
           )
         );
-        Swal.fire("Cancelado", "Tu pedido ha sido cancelado.", "success");
-      } catch (error) {
-        console.error(error);
-        Swal.fire("Error", "No se pudo cancelar el pedido.", "error");
+        Swal.fire({
+          title: "¡Pedido cancelado!",
+          text: "El pedido ha sido cancelado exitosamente.",
+          icon: "success",
+          confirmButtonColor: "#4CAF50",
+        });
+      } catch (err) {
+        console.error("Error cancelling order:", err);
+        Swal.fire({
+          title: "Error",
+          text: "No se pudo cancelar el pedido. Por favor intenta nuevamente.",
+          icon: "error",
+          confirmButtonColor: "#ff4d4d",
+        });
       }
     }
   };
 
-  const canBeCancelled = (status) => {
-    return status === "PENDING" || status === "PAID";
+  const canBeCancelled = useCallback((status) => {
+    return ["PENDING", "PAID"].includes(status);
+  }, []);
+
+  const getStatusIcon = useCallback((status) => {
+    const iconProps = { className: "status-icon", size: 20 };
+    switch (status) {
+      case "PENDING":
+        return <FiAlertCircle {...iconProps} style={{ color: "#F59E0B" }} />;
+      case "PAID":
+        return <FiDollarSign {...iconProps} style={{ color: "#3B82F6" }} />;
+      case "SHIPPED":
+        return <FiTruck {...iconProps} style={{ color: "#6366F1" }} />;
+      case "DELIVERED":
+        return <FiCheckCircle {...iconProps} style={{ color: "#10B981" }} />;
+      case "CANCELLED":
+        return <FiXCircleQuintana Roo Circle {...iconProps} style={{ color: "#EF4444" }} />;
+      default:
+        return <FiPackage {...iconProps} />;
+    }
+  }, []);
+
+  const filteredOrders = useMemo(() => {
+    let result = [...orders];
+
+    // Apply status filter
+    if (filter !== "ALL") {
+      result = result.filter((order) =>
+        filter === "ACTIVE"
+          ? ["PENDING", "PAID", "SHIPPED"].includes(order.status)
+          : order.status === filter
+      );
+    }
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter((order) =>
+        order.id.toString().includes(query) ||
+        order.items.some(item =>
+          item.variant_name.toLowerCase().includes(query)
+        ));
+    }
+
+    return result;
+  }, [orders, filter, searchQuery]);
+
+  const totalPages = Math.ceil(filteredOrders.length / ITEMS_PER_PAGE);
+  const paginatedOrders = useMemo(() => {
+    return filteredOrders.slice(
+      (currentPage - 1) * ITEMS_PER_PAGE,
+      currentPage * ITEMS_PER_PAGE
+    );
+  }, [filteredOrders, currentPage]);
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
   };
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+  };
+
+  if (loading && !isRefreshing) {
+    return (
+      <>
+        <Navbar />
+        <div className="my-orders-wrapper">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Cargando tus pedidos...</p>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
+
+  if (error) {
+    return (
+      <>
+        <Navbar />
+        <div className="my-orders-wrapper">
+          <div className="error-message">
+            <FiAlertCircle size={48} />
+            <p>{error}</p>
+            <button onClick={handleRefresh} className="refresh-button">
+              <FiRefreshCw /> Intentar nuevamente
+            </button>
+          </div>
+        </div>
+        <Footer />
+      </>
+    );
+  }
 
   return (
     <>
       <Navbar />
-      <div className="my-orders-container">
-        <h2>Mis Pedidos</h2>
-        {orders.length === 0 ? (
-          <p>No tienes pedidos aún.</p>
-        ) : (
-          orders.map((order) => (
-            <div className="my-order-card" key={order.id}>
-              <div className="my-order-info">
-                <p>
-                  <strong>Dirección:</strong> {order.address}, {order.city},{" "}
-                  {order.department}
-                </p>
-                <p>
-                  <strong>Fecha:</strong>{" "}
-                  {new Date(order.created_at).toLocaleString()}
-                </p>
-                <p>
-                  <strong>Estado:</strong> {order.status_display}
-                </p>
-                <p>
-                  <strong>Total:</strong>{" "}
-                  ${parseFloat(order.total_price).toLocaleString()}
-                </p>
-                {canBeCancelled(order.status) && (
-                  <button
-                    className="cancel-order-button"
-                    onClick={() => handleCancel(order.id)}
-                  >
-                    Cancelar Pedido
-                  </button>
-                )}
-              </div>
-              <div className="my-order-items">
-                <p>
-                  <strong>Productos:</strong>
-                </p>
-                <ul>
-                  {order.items.map((item) => (
-                    <li key={item.id}>
-                      {item.variant_name} - Talla {item.size} - Cantidad:{" "}
-                      {item.quantity}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+      <div className="my-orders-wrapper">
+        <div className="orders-section-header">
+          <div className="orders-title-section">
+            <h1>Mis Pedidos</h1>
+            <p className="orders-count">
+              {filteredOrders.length} {filteredOrders.length === 1 ? "pedido" : "pedidos"} encontrados
+            </p>
+          </div>
+
+          <div className="orders-controls">
+            <div className="search-bar">
+              <FiSearch className="search-icon" />
+              <input
+                type="text"
+                placeholder="Buscar pedidos o productos..."
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setCurrentPage(1);
+                }}
+              />
             </div>
-          ))
+
+            <div className="filter-group">
+              <FiFilter className="filter-icon" />
+              <select
+                value={filter}
+                onChange={(e) => {
+                  setFilter(e.target.value);
+                  setCurrentPage(1);
+                }}
+                className="filter-select"
+              >
+                {STATUS_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing}
+              className="refresh-button"
+            >
+              <FiRefreshCw className={isRefreshing ? "spinning" : ""} />
+              {isRefreshing ? "Actualizando..." : "Actualizar"}
+            </button>
+          </div>
+        </div>
+
+        {filteredOrders.length === 0 ? (
+          <div className="empty-state">
+            <FiPackage size={64} />
+            <h3>No hay pedidos {filter !== "ALL" ? "con estos filtros" : "registrados"}</h3>
+            <p>
+              {searchQuery
+                ? "Intenta con otro término de búsqueda."
+                : filter !== "ALL"
+                  ? "Prueba cambiando los filtros."
+                  : "Cuando hagas un pedido, aparecerá aquí."}
+            </p>
+            {filter !== "ALL" || searchQuery ? (
+              <button
+                onClick={() => {
+                  setFilter("ALL");
+                  setSearchQuery("");
+                }}
+                className="reset-filters-button"
+              >
+                Mostrar todos los pedidos
+              </button>
+            ) : null}
+          </div>
+        ) : (
+          <>
+            <div className="orders-list-container">
+              {paginatedOrders.map((order) => (
+                <OrderCard
+                  key={order.id}
+                  order={order}
+                  onCancel={handleCancel}
+                  canBeCancelled={canBeCancelled}
+                  getStatusIcon={getStatusIcon}
+                  allImages={allImages}
+                  formatDate={formatDate}
+                />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="pagination-container">
+                <button
+                  onClick={handlePrevPage}
+                  disabled={currentPage === 1}
+                  className="pagination-button"
+                  aria-label="Página anterior"
+                >
+                  <FiChevronLeft />
+                </button>
+
+                <div className="page-indicator">
+                  Página <span className="current-page">{currentPage}</span> de{" "}
+                  <span className="total-pages">{totalPages}</span>
+                </div>
+
+                <button
+                  onClick={handleNextPage}
+                  disabled={currentPage === totalPages}
+                  className="pagination-button"
+                  aria-label="Página siguiente"
+                >
+                  <FiChevronRight />
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
       <Footer />
     </>
+  );
+};
+
+const OrderCard = ({
+  order,
+  onCancel,
+  canBeCancelled,
+  getStatusIcon,
+  allImages,
+  formatDate,
+}) => {
+  const [expanded, setExpanded] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const toggleExpand = () => {
+    if (!isAnimating) {
+      setIsAnimating(true);
+      setExpanded(!expanded);
+      setTimeout(() => setIsAnimating(false), 300);
+    }
+  };
+
+  const orderTotal = parseFloat(order.total_price).toLocaleString("es-ES", {
+    style: "currency",
+    currency: "COP",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 0,
+  });
+
+  return (
+    <div
+      className={`order-card ${order.status.toLowerCase()} ${expanded ? "expanded" : ""
+        }`}
+    >
+      <div
+        className="order-card-header"
+        onClick={toggleExpand}
+        aria-expanded={expanded}
+      >
+        <div className="order-meta">
+          <div className="order-status">
+            {getStatusIcon(order.status)}
+            <span>{order.status_display}</span>
+          </div>
+          <div className="order-id">Pedido #{order.id}</div>
+        </div>
+
+        <div className="order-summary">
+          <div className="order-date">
+            <FiCalendar />
+            <span>{formatDate(order.created_at)}</span>
+          </div>
+          <div className="order-total">
+            <FiDollarSign />
+            <span>{orderTotal}</span>
+          </div>
+          <div className="order-items-count">
+            <FiPackage />
+            <span>{order.items.length} producto{order.items.length !== 1 ? "s" : ""}</span>
+          </div>
+        </div>
+
+        <div className={`expand-icon ${expanded ? "expanded" : ""}`}>
+          <FiChevronRight />
+        </div>
+      </div>
+
+      <div className={`order-details ${expanded ? "visible" : ""}`}>
+        <div className="details-section">
+          <h4>Información de envío</h4>
+          <div className="shipping-info">
+            <FiMapPin />
+            <div>
+              <p>
+                <strong>Dirección:</strong> {order.address}, {order.city}, {order.department}
+              </p>
+              {order.tracking_number && (
+                <p>
+                  <strong>Número de seguimiento:</strong> {order.tracking_number}
+                </p>
+              )}
+            </div>
+          </div>
+        </div>
+
+        <div className="details-section">
+          <h4>Productos ({order.items.length})</h4>
+          <ul className="products-list">
+            {order.items.map((item) => {
+              const variantId = item.variant;
+              const productImage =
+                allImages.find((img) => img.variant === variantId)?.image ||
+                "/images/fallback-product.png";
+
+              const itemPrice = item.price.toLocaleString("es-ES", {
+                style: "currency",
+                currency: "COP",
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0,
+              });
+
+              return (
+                <li key={item.id} className="product-item">
+                  <div className="product-image-container">
+                    <img
+                      src={productImage}
+                      alt={item.variant_name}
+                      className="product-image"
+                      loading="lazy"
+                      onError={(e) => {
+                        e.target.src = "/images/fallback-product.png";
+                      }}
+                    />
+                  </div>
+
+                  <div className="product-info">
+                    <h5 className="product-name">{item.variant_name}</h5>
+                    <div className="product-meta">
+                      <span>Talla: {item.size}</span>
+                      <span>Cantidad: {item.quantity}</span>
+                    </div>
+                    {item.discount > 0 && (
+                      <div className="product-discount">
+                        <span className="original-price">{itemPrice}</span>
+                        <span className="discount-badge">
+                          {item.discount}% OFF
+                        </span>
+                        <span className="final-price">
+                          {(
+                            item.price *
+                            (1 - item.discount / 100)
+                          ).toLocaleString("es-ES", {
+                            style: "currency",
+                            currency: "COP",
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 0,
+                          })}
+                        </span>
+                      </div>
+                    )}
+                    {item.discount <= 0 && (
+                      <div className="product-price">{itemPrice}</div>
+                    )}
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+
+        {canBeCancelled(order.status) && (
+          <div className="order-actions">
+            <button
+              onClick={() => onCancel(order.id)}
+              className="cancel-button"
+              aria-label="Cancelar pedido"
+            >
+              Cancelar pedido
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
 

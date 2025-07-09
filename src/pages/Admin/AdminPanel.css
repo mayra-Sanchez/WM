@@ -1,7 +1,6 @@
 .admin-panel {
   display: flex;
   height: 100vh;
-  font-family: 'Segoe UI', sans-serif;
   background-color: #121212; /* fondo general oscuro */
   overflow: hidden;
 }

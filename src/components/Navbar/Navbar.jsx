@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { AnimatePresence, motion } from "framer-motion";
@@ -10,6 +10,8 @@ import {
   faTimes,
   faChevronDown,
   faChevronUp,
+  faBoxOpen,
+  faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import AuthLayout from "../Auth/AuthLayout/AuthLayout";
@@ -38,6 +40,9 @@ const Navbar = () => {
   const navigate = useNavigate();
   const [showCart, setShowCart] = useState(false);
   const { cartItems } = useCart();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const userDropdownRef = useRef(null);
+
 
   useEffect(() => {
     const fetchCategorias = async () => {
@@ -50,6 +55,21 @@ const Navbar = () => {
     };
     fetchCategorias();
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (userDropdownRef.current && !userDropdownRef.current.contains(e.target)) {
+        setShowUserMenu(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
+
 
   useEffect(() => {
     const fetchProductos = async () => {
@@ -103,8 +123,19 @@ const Navbar = () => {
 
   const handleLogout = () => {
     logout();
-    window.location.reload();
-    navigate('/');
+    setShowUserMenu(false);
+    setShowCart(false);
+    setShowSearch(false);
+    setSearchTerm('');
+    setFilteredProducts([]);
+    setSelectedProduct(null);
+    setShowProductModal(false);
+    setMenuOpen(false);
+    setSubOpen({});
+    localStorage.removeItem('access');
+    sessionStorage.clear();
+    window.location.reload(); 
+    navigate('/'); 
   };
 
   const toggleAuthModal = () => {
@@ -186,22 +217,44 @@ const Navbar = () => {
         </ul>
 
         <div className="navbar-icons">
+          {/* Usuario logueado o login */}
           {user ? (
-            <div className="user-info">
-              <span>Hola, {user.name}</span>
-              <button onClick={handleLogout} className="logout-btn">
-                Cerrar sesión
-              </button>
-            </div>
+            <div
+              className="icon-item user-dropdown-wrapper"
+              ref={userDropdownRef}
+              onClick={() => setShowUserMenu(!showUserMenu)}
+            >
+              <FontAwesomeIcon icon={faUser} className="icon" />
+              <span className="user-greeting hide-on-mobile">Hola, {user.name}</span>
+              <FontAwesomeIcon icon={showUserMenu ? faChevronUp : faChevronDown} className="dropdown-icon hide-on-mobile" />
 
+              <AnimatePresence>
+                {showUserMenu && (
+                  <motion.ul
+                    className="user-dropdown"
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <li onClick={() => { navigate("/my-orders"); setShowUserMenu(false); }}>
+                      <FontAwesomeIcon icon={faBoxOpen} className="dropdown-icon-left" />
+                      Mis pedidos
+                    </li>
+                    <li onClick={() => { handleLogout(); setShowUserMenu(false); }}>
+                      <FontAwesomeIcon icon={faRightFromBracket} className="dropdown-icon-left" />
+                      Cerrar sesión
+                    </li>
+                  </motion.ul>
+                )}
+              </AnimatePresence>
+
+            </div>
           ) : (
-            <FontAwesomeIcon
-              icon={faUser}
-              className="icon"
-              onClick={toggleAuthModal}
-            />
+            <FontAwesomeIcon icon={faUser} className="icon" onClick={toggleAuthModal} />
           )}
 
+          {/* Carrito */}
           <div className="icon-with-badge" onClick={toggleCart}>
             <FontAwesomeIcon icon={faShoppingCart} className="icon" />
             {cartItems.length > 0 && (
@@ -209,22 +262,23 @@ const Navbar = () => {
             )}
           </div>
 
+          {/* Wishlist */}
           <WishlistDropdown />
 
+          {/* Buscar */}
           <FontAwesomeIcon
             icon={faSearch}
             className="icon"
             onClick={toggleSearchBar}
           />
 
-          <a href="my-orders">Mis pedidos</a>
-
+          {/* Barra de búsqueda activa */}
           {showSearch && (
             <SearchBar
               searchField={searchField}
               setSearchField={setSearchField}
               searchTerm={searchTerm}
-              setSearchTerm={handleSearchChange} 
+              setSearchTerm={handleSearchChange}
               filteredProducts={filteredProducts}
               onResultClick={(product) => {
                 setSelectedProduct(product);
@@ -236,6 +290,7 @@ const Navbar = () => {
             />
           )}
         </div>
+
       </nav>
 
       {/* Resto del código permanece igual */}

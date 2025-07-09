@@ -10,14 +10,12 @@ import './../../components/Navbar/Navbar.css'
 const Home = () => {
   return (
     <div>
-      <Navbar />
       <div className="page-content fullscreen-home">
         <HeroVideo />
       </div>
       <ProductCarousel />
       <FeaturesStrip />
       <WhatsappButton />
-      <Footer />
     </div>
   );
 };
