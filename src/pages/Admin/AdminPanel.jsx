@@ -8,6 +8,7 @@ import Reports from '../../components/Admin/Reports';
 import './AdminPanel.css';
 import Categories from '../../components/Admin/Categories';
 import { useAuth } from '../../contexts/AuthContext';
+import OrdersManagement from '../../components/Admin/OrdersMangement';
 
 const AdminPanel = () => {
   const navigate = useNavigate();
@@ -32,6 +33,7 @@ const AdminPanel = () => {
           {activeTab === 'categories' && <Categories />}
           {activeTab === 'products' && <ProductManagement />}
           {activeTab === 'reports' && <Reports />}
+          {activeTab === 'orders' && <OrdersManagement />}
         </div>
       </div>
     </div>

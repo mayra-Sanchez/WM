@@ -1,0 +1,37 @@
+.my-orders-container {
+    margin: 100px auto 0 auto; 
+    padding: 2rem;
+    max-width: 900px;
+}
+
+
+.my-order-card {
+    border: 1px solid #ccc;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    background-color: #f9f9f9;
+}
+
+.my-order-info p,
+.my-order-items ul {
+    margin: 0.3rem 0;
+}
+
+.my-order-items ul {
+    padding-left: 1.2rem;
+}
+
+.cancel-order-button {
+  margin-top: 10px;
+  padding: 0.5rem 1rem;
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.cancel-order-button:hover {
+  background-color: #e60000;
+}

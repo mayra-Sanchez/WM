@@ -1,6 +1,7 @@
 // AdminTabs.jsx
 import React, { useState } from 'react';
 import { FaUsers, FaBoxOpen, FaChartBar, FaBars, FaTimes } from 'react-icons/fa';
+import { IoDocumentTextOutline } from "react-icons/io5";
 import { BiSolidCategory } from "react-icons/bi";
 import './AdminTabs.css';
 
@@ -41,6 +42,14 @@ const AdminTabs = ({ activeTab, setActiveTab }) => {
         >
           <FaBoxOpen className="tab-icon" />
           <span>Productos</span>
+        </div>
+
+        <div
+          className={`admin-tab ${activeTab === 'orders' ? 'active' : ''}`}
+          onClick={() => handleSelect('orders')}
+        >
+          <IoDocumentTextOutline className="tab-icon" />
+          <span>Ordenes</span>
         </div>
 
         <div
