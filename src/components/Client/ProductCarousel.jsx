@@ -6,6 +6,7 @@ import { FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart } from "react-icons/
 import { useWishlist } from "../../contexts/WishlistContext";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
+import ProductCard from "./Common/ProductCard";
 
 const ProductCarousel = () => {
   const [agrupadosPorCategoria, setAgrupadosPorCategoria] = useState({});
@@ -118,58 +119,18 @@ const ProductCarousel = () => {
               <div className="carousel" ref={(el) => (carouselRefs.current[categoria] = el)}>
                 {productos.map((prod) => {
                   const variant = getDiscountedVariant(prod.variants);
-
                   return (
-                    <div key={prod.id} className="product-card" onClick={() => handleProductClick(prod)}>
-                      <div
-                        className="wishlist-icon"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          const isLoggedIn = !!localStorage.getItem("accessToken");
-                          if (!isLoggedIn) {
-                            Swal.fire({
-                              icon: "warning",
-                              title: "Debes iniciar sesión",
-                              text: "Inicia sesión para agregar productos a tu Lista de Deseos.",
-                              confirmButtonText: "Cerrar",
-                              confirmButtonColor: "#E63946",
-                            });
-                            return;
-                          }
-                          const item = wishlist.find((i) => i.product === prod.id);
-                          item ? remove(item.id) : add(prod.id);
-                        }}
-                      >
-                        {isInWishlist(prod.id) ? (
-                          <FaHeart className="heart-icon filled" />
-                        ) : (
-                          <FaRegHeart className="heart-icon" />
-                        )}
-                      </div>
-
-                      {parseFloat(variant.discount) > 0 && (
-                        <div className="discount-badge">-{variant.discount_label}</div>
-                      )}
-
-                      <img
-                        loading="lazy"
-                        src={variant.images[0]?.image || "/img/no-image.jpg"}
-                        alt={prod.name}
-                        className="product-image"
-                      />
-
-                      <div className="product-info">
-                        <h3>{prod.name}</h3>
-                        {parseFloat(variant.discount) > 0 ? (
-                          <p>
-                            <span className="price-old">${prod.price}</span>{" "}
-                            <span className="price-new">${variant.final_price.toFixed(2)}</span>
-                          </p>
-                        ) : (
-                          <p className="price">${prod.price}</p>
-                        )}
-                      </div>
-                    </div>
+                    <ProductCard
+                      key={prod.id}
+                      product={prod}
+                      variant={variant}
+                      isInWishlist={isInWishlist(prod.id)}
+                      onToggleWishlist={(id) => {
+                        const item = wishlist.find((i) => i.product === id);
+                        item ? remove(item.id) : add(id);
+                      }}
+                      onClick={() => handleProductClick(prod)}
+                    />
                   );
                 })}
               </div>

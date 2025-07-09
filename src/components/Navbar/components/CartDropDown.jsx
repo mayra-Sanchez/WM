@@ -96,7 +96,16 @@ const CartDropdown = ({ isOpen, onClose }) => {
         {cartItems.length > 0 && (
           <div className="cart-total">
             <p>Total: ${totalPrice.toLocaleString()}</p>
-            <button className="checkout-button" onClick={() => navigate('/checkout')}>Finalizar Compra</button>
+            <button
+              className="checkout-button"
+              onClick={() => {
+                onClose(); 
+                navigate("/checkout"); 
+              }}
+            >
+              Finalizar Compra
+            </button>
+
           </div>
         )}
       </div>

@@ -132,11 +132,18 @@ const Navbar = () => {
     setShowProductModal(false);
     setMenuOpen(false);
     setSubOpen({});
+
     localStorage.removeItem('access');
     sessionStorage.clear();
-    window.location.reload(); 
-    navigate('/'); 
+
+    navigate('/');
+
+    setTimeout(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      window.location.reload();
+    }, 300);
   };
+
 
   const toggleAuthModal = () => {
     if (menuOpen) setMenuOpen(false);

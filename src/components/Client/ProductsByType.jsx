@@ -1,8 +1,8 @@
 import { useParams, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import Navbar from "../Navbar/Navbar";
-import Footer from "../Footer/Footer";
+import ProductCard from "./Common/ProductCard";
+import { useWishlist } from "../../contexts/WishlistContext";
 import ProductModal from "./ProductModal";
 import "./ProductsByType.css";
 
@@ -14,7 +14,10 @@ const ProductsByType = () => {
   const [productos, setProductos] = useState([]);
   const [nombre, setNombre] = useState("");
   const [subcategorias, setSubcategorias] = useState([]);
+  const [categoriaProductos, setCategoriaProductos] = useState([]);
+  const [visibleCatProds, setVisibleCatProds] = useState(4);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const { wishlist, add, remove } = useWishlist();
 
   const isSub = location.pathname.includes("/subcategoria/");
 
@@ -34,21 +37,25 @@ const ProductsByType = () => {
         let nombreActual = "";
         let filtrados = [];
         let subcats = [];
+        let parentProducts = [];
 
         catRes.data.forEach((cat) => {
           if (cat.id === idInt && !isSub) {
+            // Estás en categoría
             nombreActual = cat.name;
             subcats = cat.subcategories;
             const subIds = subcats.map((sub) => sub.id);
-
             filtrados = prodRes.data.filter(
               (p) => p.category === cat.id || subIds.includes(p.category)
             );
           } else {
+            // Estás en subcategoría
             cat.subcategories.forEach((sub) => {
-              if (sub.id === idInt) {
+              if (sub.id === idInt && isSub) {
                 nombreActual = sub.name;
                 filtrados = prodRes.data.filter((p) => p.category === sub.id);
+                parentProducts = prodRes.data.filter((p) => p.category === cat.id);
+                subcats = cat.subcategories;
               }
             });
           }
@@ -56,7 +63,9 @@ const ProductsByType = () => {
 
         setNombre(nombreActual);
         setProductos(filtrados);
+        setCategoriaProductos(parentProducts);
         setSubcategorias(subcats);
+        setVisibleCatProds(4);
       } catch (error) {
         console.error("Error al cargar productos:", error);
       }
@@ -66,7 +75,7 @@ const ProductsByType = () => {
   }, [id, location.pathname]);
 
   const getDiscountedVariant = (variants) => {
-    return variants?.find(v => parseFloat(v.discount) > 0) || variants?.[0];
+    return variants?.find((v) => parseFloat(v.discount) > 0) || variants?.[0];
   };
 
   return (
@@ -76,14 +85,17 @@ const ProductsByType = () => {
           {isSub ? "Subcategoría" : "Categoría"}: {nombre}
         </h2>
 
-        {!isSub && subcategorias.length > 0 && (
+        {/* Mostrar chips siempre que haya subcategorías */}
+        {subcategorias.length > 0 && (
           <div className="subcategories-container">
             <p className="subcategories-title">Explora subcategorías:</p>
             <div className="subcategories-chips">
               {subcategorias.map((sub) => (
                 <button
                   key={sub.id}
-                  className="subcategory-chip"
+                  className={`subcategory-chip ${
+                    parseInt(id) === sub.id ? "active" : ""
+                  }`}
                   onClick={() => navigate(`/subcategoria/${sub.id}`)}
                 >
                   {sub.name}
@@ -93,42 +105,60 @@ const ProductsByType = () => {
           </div>
         )}
 
+        {/* Mostrar productos de categoría madre si estás en una subcategoría */}
+        {isSub && categoriaProductos.length > 0 && (
+          <div className="category-parent-products">
+            <p className="parent-products-title">
+              También puedes estar interesad@ en productos de la categoría:
+            </p>
+            <div className="product-grid">
+              {categoriaProductos.slice(0, visibleCatProds).map((prod) => {
+                const variant = getDiscountedVariant(prod.variants);
+                return (
+                  <ProductCard
+                    key={prod.id}
+                    product={prod}
+                    variant={variant}
+                    isInWishlist={wishlist.some((item) => item.product === prod.id)}
+                    onToggleWishlist={(id) => {
+                      const item = wishlist.find((i) => i.product === id);
+                      item ? remove(item.id) : add(id);
+                    }}
+                    onClick={() => setSelectedProduct(prod)}
+                  />
+                );
+              })}
+            </div>
+            {categoriaProductos.length > visibleCatProds && (
+              <div className="centered-button">
+                <button
+                  className="load-more-btn"
+                  onClick={() => setVisibleCatProds((prev) => prev + 4)}
+                >
+                  Ver más
+                </button>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mostrar productos principales de la vista actual */}
         {productos.length > 0 ? (
           <div className="product-grid">
             {productos.map((prod) => {
               const variant = getDiscountedVariant(prod.variants);
-
               return (
-                <div
+                <ProductCard
                   key={prod.id}
-                  className="product-card"
+                  product={prod}
+                  variant={variant}
+                  isInWishlist={wishlist.some((item) => item.product === prod.id)}
+                  onToggleWishlist={(id) => {
+                    const item = wishlist.find((i) => i.product === id);
+                    item ? remove(item.id) : add(id);
+                  }}
                   onClick={() => setSelectedProduct(prod)}
-                >
-                  {variant && parseFloat(variant.discount) > 0 && (
-                    <span className="discount-badge">-{variant.discount_label}</span>
-                  )}
-
-                  <div className="product-image-wrapper">
-                    <img
-                      src={variant?.images?.[0]?.image || "/img/no-image.jpg"}
-                      alt={prod.name}
-                      className="product-image"
-                      loading="lazy"
-                    />
-                  </div>
-
-                  <div className="product-info">
-                    <h3>{prod.name}</h3>
-                    {variant && parseFloat(variant.discount) > 0 ? (
-                      <p>
-                        <span className="price-old">${prod.price}</span>{" "}
-                        <span className="price-new">${variant.final_price.toFixed(2)}</span>
-                      </p>
-                    ) : (
-                      <p className="price">${prod.price}</p>
-                    )}
-                  </div>
-                </div>
+                />
               );
             })}
           </div>
