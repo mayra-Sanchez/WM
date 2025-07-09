@@ -205,7 +205,6 @@ const MyOrders = () => {
   if (loading && !isRefreshing) {
     return (
       <>
-        <Navbar />
         <div className="my-orders-wrapper">
           <div className="loading-container">
             <div className="loading-spinner"></div>
@@ -354,7 +353,6 @@ const MyOrders = () => {
           </>
         )}
       </div>
-      <Footer />
     </>
   );
 };
