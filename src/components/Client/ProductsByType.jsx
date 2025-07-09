@@ -71,7 +71,6 @@ const ProductsByType = () => {
 
   return (
     <>
-      <Navbar />
       <main className="products-container">
         <h2 className="category-title">
           {isSub ? "Subcategoría" : "Categoría"}: {nombre}
@@ -143,8 +142,6 @@ const ProductsByType = () => {
         isOpen={!!selectedProduct}
         onClose={() => setSelectedProduct(null)}
       />
-
-      <Footer />
     </>
   );
 };
