@@ -217,12 +217,14 @@ const Navbar = () => {
             onClick={toggleSearchBar}
           />
 
+          <a href="my-orders">Mis pedidos</a>
+
           {showSearch && (
             <SearchBar
               searchField={searchField}
               setSearchField={setSearchField}
               searchTerm={searchTerm}
-              setSearchTerm={handleSearchChange} // Corregido aquí
+              setSearchTerm={handleSearchChange} 
               filteredProducts={filteredProducts}
               onResultClick={(product) => {
                 setSelectedProduct(product);

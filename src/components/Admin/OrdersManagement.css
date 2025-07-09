@@ -1,0 +1,165 @@
+.orders-container {
+  padding: 40px 20px;
+  max-width: 1000px;
+  margin: 0 auto;
+  color: #F1F1F1;
+}
+
+.orders-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+
+.orders-title {
+  font-size: 2.4rem;
+  margin-bottom: 40px;
+  text-align: center;
+  font-weight: 600;
+  color: #F1F1F1;
+}
+
+.order-card {
+  background-color: #000000;
+  border-radius: 12px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.4);
+  border: 1px solid #333;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.order-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #333;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
+}
+
+.order-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #F1F1F1;
+}
+
+.order-user {
+  margin-top: 10px;
+  font-size: 0.95rem;
+}
+
+.order-date {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+.order-address {
+  margin-bottom: 16px;
+  font-size: 0.95rem;
+  color: #ccc;
+  line-height: 1.4;
+}
+
+.order-address p {
+  margin: 4px 0;
+}
+
+.order-status {
+  appearance: none;
+  color: white;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  outline: none;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+/* Efecto hover sobre el select */
+.order-status:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* Estilos individuales por estado */
+.order-status.pending {
+  background-color: #da834e;
+}
+
+.order-status.paid {
+  background-color: #15803d;
+}
+
+.order-status.shipped {
+  background-color: #0369a1;
+}
+
+.order-status.cancelled {
+  background-color: #991b1b;
+}
+
+.order-status option {
+  background-color: #f1f1f1;
+  color: #111;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.order-status-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.order-lock-icon {
+  color: #ccc;
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.order-lock-icon:hover {
+  color: #f87171;
+  /* Rojo claro */
+  transform: scale(1.2);
+}
+
+
+
+.order-items ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.order-items li {
+  padding: 8px 0;
+  font-size: 0.95rem;
+  color: #ddd;
+  border-bottom: 1px solid #333;
+}
+
+.order-items li:last-child {
+  border-bottom: none;
+}
+
+.item-info {
+  line-height: 1.5;
+}
+
+.order-total {
+  margin-top: 20px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: right;
+  color: #F1F1F1;
+}

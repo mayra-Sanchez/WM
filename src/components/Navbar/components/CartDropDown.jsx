@@ -2,9 +2,11 @@ import { useEffect } from "react";
 import { FaTimes, FaTrashAlt } from "react-icons/fa";
 import "./CartDropdown.css";
 import { useCart } from "../../../contexts/CartContext";
+import { useNavigate } from "react-router-dom";
 
 const CartDropdown = ({ isOpen, onClose }) => {
   const { cartItems, fetchCart, removeItem, updateItem } = useCart();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (isOpen) fetchCart();
@@ -94,7 +96,7 @@ const CartDropdown = ({ isOpen, onClose }) => {
         {cartItems.length > 0 && (
           <div className="cart-total">
             <p>Total: ${totalPrice.toLocaleString()}</p>
-            <button className="checkout-button">Finalizar Compra</button>
+            <button className="checkout-button" onClick={() => navigate('/checkout')}>Finalizar Compra</button>
           </div>
         )}
       </div>
