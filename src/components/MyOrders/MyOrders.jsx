@@ -17,7 +17,12 @@ import {
   FiChevronRight,
   FiSearch,
   FiFilter,
-  FiRefreshCw
+  FiRefreshCw,
+  FiMessageSquare,
+  FiUpload,
+  FiSmartphone ,
+  FiX,
+  FiCreditCard
 } from "react-icons/fi";
 import "./MyOrders.css";
 
@@ -51,7 +56,7 @@ const MyOrders = () => {
       if (topBar && navbar && myOrdersWrapper) {
         const topBarHeight = topBar.offsetHeight;
         const navbarHeight = navbar.offsetHeight;
-        const totalHeight = topBarHeight + navbarHeight + 16; // Add 16px buffer
+        const totalHeight = topBarHeight + navbarHeight + 16;
         myOrdersWrapper.style.paddingTop = `${totalHeight}px`;
       }
     };
@@ -147,7 +152,7 @@ const MyOrders = () => {
       case "DELIVERED":
         return <FiCheckCircle {...iconProps} style={{ color: "#10B981" }} />;
       case "CANCELLED":
-        <FiXCircle {...iconProps} style={{ color: "#EF4444" }} />;
+        return <FiXCircle {...iconProps} style={{ color: "#EF4444" }} />;
       default:
         return <FiPackage {...iconProps} />;
     }
@@ -156,7 +161,6 @@ const MyOrders = () => {
   const filteredOrders = useMemo(() => {
     let result = [...orders];
 
-    // Apply status filter
     if (filter !== "ALL") {
       result = result.filter((order) =>
         filter === "ACTIVE"
@@ -165,7 +169,6 @@ const MyOrders = () => {
       );
     }
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter((order) =>
@@ -338,7 +341,7 @@ const MyOrders = () => {
                 >
                   <FiChevronLeft />
                 </button>
-                ...
+                <span>Página {currentPage} de {totalPages}</span>
                 <button
                   onClick={handleNextPage}
                   disabled={currentPage === totalPages}
@@ -348,11 +351,11 @@ const MyOrders = () => {
                   <FiChevronRight />
                 </button>
               </div>
-
             )}
           </>
         )}
       </div>
+      <Footer />
     </>
   );
 };
@@ -367,7 +370,10 @@ const OrderCard = ({
 }) => {
   const [expanded, setExpanded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [activePaymentTab, setActivePaymentTab] = useState('transfer');
 
+  // Función toggleExpand que faltaba
   const toggleExpand = () => {
     if (!isAnimating) {
       setIsAnimating(true);
@@ -383,11 +389,60 @@ const OrderCard = ({
     maximumFractionDigits: 0,
   });
 
-  return (
-    <div
-      className={`order-card ${order.status.toLowerCase()} ${expanded ? "expanded" : ""
-        }`}
+  const handlePaymentConfirmation = () => {
+    const phoneNumber = "573106366464"; // Tu número de WhatsApp
+    const paymentMethod = 
+      activePaymentTab === 'transfer' ? 'Transferencia Bancaria' : 
+      activePaymentTab === 'nequi' ? 'Nequi' : 'Efectivo';
+    
+    const message = `*Confirmación de Pago - Pedido #${order.id}*\n\n` +
+                   `*Cliente:* ${order.user_name || 'No especificado'}\n` +
+                   `*Método de Pago:* ${paymentMethod}\n` +
+                   `*Total Pagado:* ${orderTotal}\n` +
+                   `*Fecha:* ${new Date().toLocaleDateString('es-ES')}\n\n` +
+                   `Por favor confirma la recepción de este pago.`;
+
+    window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
+    
+    Swal.fire({
+      title: '¡Listo para confirmar!',
+      html: `<div style="text-align: left;">
+        <p>Se abrió WhatsApp con los detalles de tu pedido.</p>
+        <p><strong>Por favor:</strong></p>
+        <ul>
+          <li>Adjunta el comprobante de pago</li>
+          <li>Envía el mensaje para confirmar</li>
+        </ul>
+      </div>`,
+      icon: 'info',
+      confirmButtonText: 'Entendido'
+    });
+    
+    setShowPaymentModal(false);
+  };
+
+  const PaymentMethodOption = ({ id, icon, title, details }) => (
+    <div 
+      className={`payment-option ${activePaymentTab === id ? 'active' : ''}`}
+      onClick={() => setActivePaymentTab(id)}
     >
+      <div className="payment-option-header">
+        {icon}
+        <h4>{title}</h4>
+      </div>
+      {activePaymentTab === id && (
+        <div className="payment-option-details">
+          {details}
+          <p className="instructions">
+            Después de realizar el pago, confírmalo enviando el comprobante por WhatsApp.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+
+  return (
+    <div className={`order-card ${order.status.toLowerCase()} ${expanded ? "expanded" : ""}`}>
       <div
         className="order-card-header"
         onClick={toggleExpand}
@@ -504,18 +559,93 @@ const OrderCard = ({
           </ul>
         </div>
 
-        {canBeCancelled(order.status) && (
-          <div className="order-actions">
+        <div className="order-actions">
+          {order.status === "PENDING" && (
+            <button
+              onClick={() => setShowPaymentModal(true)}
+              className="payment-methods-button"
+              aria-label="Métodos de pago"
+            >
+              <FiDollarSign /> Métodos de pago
+            </button>
+          )}
+
+          {canBeCancelled(order.status) && (
             <button
               onClick={() => onCancel(order.id)}
               className="cancel-button"
               aria-label="Cancelar pedido"
             >
-              Cancelar pedido
+              <FiXCircle /> Cancelar pedido
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+
+      {showPaymentModal && (
+        <div className="payment-modal-overlay">
+          <div className="payment-modal">
+            <button className="close-modal-button" onClick={() => setShowPaymentModal(false)}>
+              <FiX />
+            </button>
+            
+            <h3>Confirmar pago del pedido #{order.id}</h3>
+            <p className="order-total-modal">Total a pagar: {orderTotal}</p>
+            
+            <div className="payment-options">
+              <PaymentMethodOption
+                id="transfer"
+                icon={<FiCreditCard />}
+                title="Transferencia Bancaria"
+                details={
+                  <div className="bank-details">
+                    <p><strong>Banco:</strong> Bancolombia</p>
+                    <p><strong>Cuenta:</strong> Ahorros 808-14534-91</p>
+                    <p><strong>Titular:</strong> CAMILA SALINAS</p>
+                  </div>
+                }
+              />
+              
+              <PaymentMethodOption
+                id="nequi"
+                icon={<FiSmartphone />}
+                title="Pago por Nequi"
+                details={
+                  <div className="bank-details">
+                    <p><strong>Número:</strong> 310 626 8134</p>
+                    <p><strong>Nombre:</strong> María Camila Salinas </p>
+                    <p><strong>Número:</strong> 310 636 6464</p>
+                    <p><strong>Nombre:</strong> Jean Kenner Huacoto </p>
+                  </div>
+                }
+              />
+              
+              <PaymentMethodOption
+                id="cash"
+                icon={<FiDollarSign />}
+                title="Pago en Efectivo"
+                details={
+                  <div className="bank-details">
+                    <p><strong>Puntos de pago:</strong></p>
+                    <ul>
+                      <li>Oficina principal: Centro comercial pasaje Cali local 163</li>
+                    </ul>
+                  </div>
+                }
+              />
+            </div>
+            
+            <div className="modal-actions">
+              <button
+                onClick={handlePaymentConfirmation}
+                className="whatsapp-confirm-button"
+              >
+                <FiMessageSquare /> Confirmar pago por WhatsApp
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
