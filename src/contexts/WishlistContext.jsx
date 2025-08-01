@@ -3,7 +3,7 @@ import {
   getWishlist,
   addToWishlist,
   removeFromWishlist,
-} from "../api/wishlist";
+} from "../api/Wishlist";
 
 const WishlistContext = createContext();
 
