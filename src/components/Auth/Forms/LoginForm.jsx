@@ -38,7 +38,7 @@ export function LoginForm() {
 
   setTimeout(() => {
     if (user.role === "admin") {
-      navigate("/dashboard/");
+      navigate("/admin");
     } else {
       navigate("/");
     }
