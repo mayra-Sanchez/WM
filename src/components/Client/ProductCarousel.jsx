@@ -22,8 +22,8 @@ const ProductCarousel = () => {
     const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          axios.get("http://localhost:8000/products/api/categories/"),
-          axios.get("http://localhost:8000/products/api/products"),
+          axios.get("https://wmsiteweb.xyz/products/api/categories/"),
+          axios.get("https://wmsiteweb.xyz/products/api/products"),
         ]);
 
         const categoriasPrincipales = catRes.data.filter(cat => cat.parent === null);

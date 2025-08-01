@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const reportsApi = axios.create({
-    baseURL: "http://localhost:8000/reports/",
+    baseURL: "https://wmsiteweb.xyz/reports/",
 })
 
 const getAuthHeaders = () => {

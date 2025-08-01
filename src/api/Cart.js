@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const cartApi = axios.create({
-    baseURL: 'http://localhost:8000/cart/api/',
+    baseURL: 'https://wmsiteweb.xyz/cart/api/',
 });
 
 const getAuthHeaders = () => {
