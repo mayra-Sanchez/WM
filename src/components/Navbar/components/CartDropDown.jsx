@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { FaTimes, FaTrashAlt } from "react-icons/fa";
-import "./CartDropdown.css";
+import "./CartDropDown.css";
 import { useCart } from "../../../contexts/CartContext";
 import { useNavigate } from "react-router-dom";
 

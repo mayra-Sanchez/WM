@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { FaHeart, FaTimes, FaTrashAlt } from "react-icons/fa";
 import { useWishlist } from "../../../contexts/WishlistContext";
 import { useNavigate } from "react-router-dom";
-import "./WishlistDropdown.css";
+import "./WishlistDropDown.css";
 
 const WishlistDropdown = () => {
   const { wishlist, remove } = useWishlist();
