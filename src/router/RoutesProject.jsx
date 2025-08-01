@@ -5,7 +5,7 @@ import ClientLayout from "../layout/ClientLayout";
 import AdminLayout from "../layout/AdminLayout";
 
 import Home from "../pages/Home/Home";
-import AdminPanel from "../pages/admin//AdminPanel";
+import AdminPanel from "../pages/Admin/AdminPanel";
 import ProductsByType from "../components/Client/ProductsByType";
 import Checkout from "../components/Checkout/Checkout";
 import MyOrders from "../components/MyOrders/MyOrders";
