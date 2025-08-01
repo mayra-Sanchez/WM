@@ -36,56 +36,60 @@ export function LoginForm() {
         window.location.reload();
       });
 
-  setTimeout(() => {
-    if (user.role === "admin") {
-      navigate("/admin");
-    } else {
-      navigate("/");
+      setTimeout(() => {
+        if (user.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
+      }, 500);
+    } catch (error) {
+      console.error("ERROR LOGIN", error);
+      Swal.fire({
+        icon: "error",
+        title: "Error de autenticación",
+        text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
+        confirmButtonColor: "#e63946",
+      });
     }
-  }, 500);
-} catch (error) {
-  console.error("ERROR LOGIN", error);
-  Swal.fire({
-    icon: "error",
-    title: "Error de autenticación",
-    text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
-    confirmButtonColor: "#e63946",
-  });
-}
   };
 
-return (
-  <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-    <input
-      {...register("email", { required: true })}
-      type="email"
-      placeholder="Correo electrónico"
-      className="auth-form-input"
-    />
-
-    <div className="input-wrapper">
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <input
-        {...register("password", { required: true })}
-        type={showPassword ? "text" : "password"}
-        placeholder="Contraseña"
+        {...register("email", {
+          required: "El correo es obligatorio",
+          pattern: {
+            value: /^\S+@\S+$/i,
+            message: "Formato de correo inválido",
+          },
+        })}
+        type="email"
+        placeholder="Correo electrónico"
         className="auth-form-input"
       />
-      <span className="eye-icon" onClick={togglePassword}>
-        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-      </span>
-    </div>
+      {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
 
-    {Object.keys(errors).length > 0 && (
-      <p className="text-sm text-red-400 -mt-2">Todos los campos son obligatorios</p>
-    )}
+      <div className="input-wrapper">
+        <input
+          {...register("password", { required: "La contraseña es obligatoria" })}
+          type={showPassword ? "text" : "password"}
+          placeholder="Contraseña"
+          className="auth-form-input"
+        />
+        <span className="eye-icon" onClick={togglePassword}>
+          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+        </span>
+      </div>
+      {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
 
-    <button
-      type="submit"
-      disabled={!isValid}
-      className={!isValid ? "disabled-button" : ""}
-    >
-      Entrar
-    </button>
-  </form>
-);
+      <button
+        type="submit"
+        disabled={!isValid}
+        className={!isValid ? "disabled-button" : ""}
+      >
+        Entrar
+      </button>
+    </form>
+  );
 }

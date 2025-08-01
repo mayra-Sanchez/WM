@@ -18,7 +18,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
     if (product && product.variants.length > 0) {
       // Buscar la primera variante con descuento
       const discountedVariantIndex = product.variants.findIndex(variant => parseFloat(variant.discount) > 0);
-      
+
       // Si se encuentra una variante con descuento, seleccionarla, de lo contrario, seleccionar la primera variante
       setSelectedVariantIndex(discountedVariantIndex >= 0 ? discountedVariantIndex : 0);
       setSelectedSize(null);
@@ -142,14 +142,20 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
               <div className="modal-price">
                 {variant.discount && parseFloat(variant.discount) > 0 ? (
                   <>
-                    <span className="old-price">${product.price}</span>
-                    <span className="new-price">${variant.final_price.toFixed(2)}</span>
+                    <span className="old-price">
+                      ${Number(product.price).toLocaleString("es-CO")}
+                    </span>
+                    <span className="new-price">
+                      ${Number(variant.final_price).toLocaleString("es-CO")}
+                    </span>
                     <div className="discount-badge">
                       -{variant.discount_label}
                     </div>
                   </>
                 ) : (
-                  <span className="normal-price">{product.price}</span>
+                  <span className="normal-price">
+                    ${Number(product.price).toLocaleString("es-CO")}
+                  </span>
                 )}
               </div>
 

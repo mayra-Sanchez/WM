@@ -12,7 +12,7 @@ import {
   faCcAmex,
   faCcPaypal,
 } from "@fortawesome/free-brands-svg-icons";
-import { faEnvelope, faLocationDot } from "@fortawesome/free-solid-svg-icons";
+import { faEnvelope, faLocationDot, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 const Footer = () => {
   const [modalData, setModalData] = useState(null);
@@ -48,72 +48,101 @@ const Footer = () => {
   return (
     <>
       <footer className="footer">
-        <div className="footer-column">
-          <p>
-            <FontAwesomeIcon icon={faWhatsapp} /> +57 310 636 6464
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faEnvelope} /> wm.benchmarking@gmail.com
-          </p>
-          <p>
-            <FontAwesomeIcon icon={faLocationDot} /> Cali, Colombia.
-          </p>
-          <div className="payment-section">
-            <p>Aceptamos:</p>
+        <div className="footer-container">
+          <div className="footer-column">
+            <h3 className="footer-title">Contacto</h3>
+            <div className="contact-info">
+              <p>
+                <FontAwesomeIcon icon={faWhatsapp} className="contact-icon" /> 
+                <a href="https://wa.me/573106366464" target="_blank" rel="noopener noreferrer">
+                  +57 310 636 6464
+                </a>
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faEnvelope} className="contact-icon" /> 
+                <a href="mailto:wm.benchmarking@gmail.com">
+                  wm.benchmarking@gmail.com
+                </a>
+              </p>
+              <p>
+                <FontAwesomeIcon icon={faLocationDot} className="contact-icon" /> 
+                Cali, Colombia
+              </p>
+            </div>
+          </div>
+
+          <div className="footer-column">
+            <h3 className="footer-title">Empresa</h3>
+            <ul className="footer-links">
+              <li>
+                <button className="footer-link" onClick={() => openModal("quienes")}>
+                  ¿Quiénes somos?
+                </button>
+              </li>
+              <li>
+                <button className="footer-link" onClick={() => openModal("mision")}>
+                  Misión
+                </button>
+              </li>
+              <li>
+                <button className="footer-link" onClick={() => openModal("vision")}>
+                  Visión
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h3 className="footer-title">Métodos de pago</h3>
             <div className="payment-icons">
-              <FontAwesomeIcon icon={faCcVisa} />
-              <FontAwesomeIcon icon={faCcMastercard} />
-              <FontAwesomeIcon icon={faCcAmex} />
-              <FontAwesomeIcon icon={faCcPaypal} />
+              <FontAwesomeIcon icon={faCcVisa} className="payment-icon" />
+              <FontAwesomeIcon icon={faCcMastercard} className="payment-icon" />
+              <FontAwesomeIcon icon={faCcAmex} className="payment-icon" />
+              <FontAwesomeIcon icon={faCcPaypal} className="payment-icon" />
+            </div>
+          </div>
+
+          <div className="footer-column">
+            <h3 className="footer-title">Síguenos</h3>
+            <div className="footer-socials">
+              <a
+                href="https://www.facebook.com/profile.php?id=61562943503117"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Facebook"
+              >
+                <FontAwesomeIcon icon={faFacebook} className="social-icon" />
+              </a>
+              <a
+                href="https://www.tiktok.com/@wm.sportswear"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="TikTok"
+              >
+                <FontAwesomeIcon icon={faTiktok} className="social-icon" />
+              </a>
+              <a
+                href="https://www.instagram.com/wm__sportswear"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram"
+              >
+                <FontAwesomeIcon icon={faInstagram} className="social-icon" />
+              </a>
             </div>
           </div>
         </div>
 
-        <div className="footer-column right">
-          <ul>
-            <li>
-              <span
-                className="footer-link"
-                onClick={() => openModal("quienes")}
-              >
-                ¿Quiénes somos?
-              </span>
-            </li>
-            <li>
-              <span className="footer-link" onClick={() => openModal("mision")}>
-                Misión
-              </span>
-            </li>
-            <li>
-              <span className="footer-link" onClick={() => openModal("vision")}>
-                Visión
-              </span>
-            </li>
-          </ul>
-
-          <div className="footer-socials">
-            <a
-              href="https://www.facebook.com/profile.php?id=61562943503117"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FontAwesomeIcon icon={faFacebook} />
-            </a>
-            <a
-              href="https://www.tiktok.com/@wm.sportswear"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FontAwesomeIcon icon={faTiktok} />
-            </a>
-            <a
-              href="https://www.instagram.com/wm__sportswear"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <FontAwesomeIcon icon={faInstagram} />
-            </a>
-          </div>
+        <div className="footer-bottom">
+          <p className="copyright">
+            © {new Date().getFullYear()} WM Sport. Todos los derechos reservados.
+          </p>
+          <p className="credits">
+            Hecho con <FontAwesomeIcon icon={faHeart} className="heart-icon" /> por{" "}
+            <a href="https://ovonix.com" target="_blank" rel="noopener noreferrer" className="ovonix-link">
+              Ovonix Startup
+            </a>, Cali, Colombia
+          </p>
         </div>
       </footer>
 
