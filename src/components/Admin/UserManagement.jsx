@@ -37,7 +37,7 @@ const UserManagement = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://127.0.0.1:8000/users/api/users/", {
+      const res = await axios.get("https://wm-one.vercel.app/users/api/users/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const UserManagement = () => {
   const confirmRoleChange = async () => {
     try {
       await axios.patch(
-        `https://wmsiteweb.xyz/users/api/users/${selectedUser.id}/`,
+        `http://127.0.0.1:8000/users/api/users/${selectedUser.id}/`,
         { role: selectedUser.newRole },
         {
           headers: {

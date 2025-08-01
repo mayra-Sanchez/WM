@@ -47,7 +47,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("https://wmsiteweb.xyzproducts/api/categories/");
+        const response = await axios.get("https://wmsiteweb.xyz/products/api/categories/");
         setCategorias(response.data);
       } catch (error) {
         console.error("Error al obtener categorías:", error);

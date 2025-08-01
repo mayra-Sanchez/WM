@@ -25,7 +25,7 @@ const RoutesProject = () => {
         </Route>
 
         {/* Rutas admin */}
-        <Route path="/admin" element={<AdminLayout />}>
+        <Route path="/dashboard/" element={<AdminLayout />}>
           <Route index element={<AdminPanel />} />
           {/* Aquí puedes agregar más rutas admin si tienes */}
         </Route>
