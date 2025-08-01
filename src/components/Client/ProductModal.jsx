@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, memo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Zoom from "react-medium-image-zoom";
 import Swal from "sweetalert2";
@@ -6,7 +6,7 @@ import "react-medium-image-zoom/dist/styles.css";
 import "./ProductModal.css";
 import { useCart } from "../../contexts/CartContext";
 
-const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
+const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
   const [selectedVariantIndex, setSelectedVariantIndex] = useState(0);
   const [selectedSize, setSelectedSize] = useState(null);
   const [mainImage, setMainImage] = useState(null);
@@ -15,15 +15,23 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   const { addItem } = useCart();
 
   useEffect(() => {
-    if (product && product.variants.length > 0) {
-      // Buscar la primera variante con descuento
-      const discountedVariantIndex = product.variants.findIndex(variant => parseFloat(variant.discount) > 0);
+    if (!product || product.variants.length === 0) return;
 
-      // Si se encuentra una variante con descuento, seleccionarla, de lo contrario, seleccionar la primera variante
-      setSelectedVariantIndex(discountedVariantIndex >= 0 ? discountedVariantIndex : 0);
-      setSelectedSize(null);
-      setMainImage(product.variants[discountedVariantIndex >= 0 ? discountedVariantIndex : 0]?.images[0]?.image || null);
-      setQuantity(1);
+    const discountedIndex = product.variants.findIndex(
+      (v) => parseFloat(v.discount) > 0
+    );
+    const defaultIndex = discountedIndex >= 0 ? discountedIndex : 0;
+
+    const initialImage = product.variants[defaultIndex]?.images?.[0]?.image || null;
+
+    setSelectedVariantIndex(defaultIndex);
+    setSelectedSize(null);
+    setMainImage(initialImage);
+    setQuantity(1);
+
+    if (initialImage) {
+      const preload = new Image();
+      preload.src = initialImage;
     }
   }, [product]);
 
@@ -33,10 +41,13 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   const images = variant.images || [];
   const sizes = variant.sizes || [];
 
+  const selectedSizeObj = sizes.find((s) => s.size === selectedSize);
+
   const handleAddToCart = () => {
     const isLoggedIn = !!localStorage.getItem("accessToken");
+
     if (!isLoggedIn) {
-      Swal.fire({
+      return Swal.fire({
         icon: "warning",
         title: "Debes iniciar sesión",
         text: "Inicia sesión para agregar productos al carrito.",
@@ -44,33 +55,17 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
         color: "#000",
         confirmButtonColor: "#e63946",
       });
-      return;
     }
-
-    if (!selectedSize) {
-      Swal.fire({
-        icon: "warning",
-        title: "Selecciona una talla",
-        text: "Debes elegir una talla antes de agregar al carrito.",
-        background: "#1e1e1e",
-        color: "#fff",
-        confirmButtonColor: "#e63946",
-      });
-      return;
-    }
-
-    const selectedSizeObj = sizes.find(s => s.size === selectedSize);
 
     if (!selectedSizeObj) {
-      Swal.fire({
-        icon: "error",
-        title: "Talla no válida",
-        text: "No se pudo encontrar el ID de la talla.",
+      return Swal.fire({
+        icon: "warning",
+        title: "Selecciona una talla válida",
+        text: "Elige una talla antes de agregar al carrito.",
         background: "#1e1e1e",
         color: "#fff",
         confirmButtonColor: "#e63946",
       });
-      return;
     }
 
     addItem({
@@ -113,32 +108,46 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
             transition={{ duration: 0.25 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <button className="modal-close" onClick={onClose} aria-label="Cerrar">&times;</button>
+            <button className="modal-close" onClick={onClose} aria-label="Cerrar modal">
+              &times;
+            </button>
+
+            {/* 🖼️ Izquierda */}
             <div className="modal-left">
               <div className="modal-main-img">
                 <Zoom>
-                  <img src={mainImage || images[0]?.image} alt={product.name} />
+                  <img
+                    src={mainImage || images[0]?.image}
+                    alt={product.name}
+                    loading="lazy"
+                  />
                 </Zoom>
+
                 {parseFloat(product.discount) > 0 && (
                   <div className="discount-badge">
                     -{Math.round((parseFloat(product.discount) * 100) / parseFloat(product.price))}%
                   </div>
                 )}
               </div>
+
               <div className="modal-gallery">
                 {images.map((img, idx) => (
                   <img
                     key={idx}
                     src={img.image}
                     alt={`Variante ${idx}`}
+                    loading="lazy"
                     className={`modal-thumbnail ${mainImage === img.image ? "active" : ""}`}
                     onClick={() => setMainImage(img.image)}
                   />
                 ))}
               </div>
             </div>
+
+            {/* 🛒 Derecha */}
             <div className="modal-right">
               <h2>{product.name}</h2>
+
               <div className="modal-price">
                 {variant.discount && parseFloat(variant.discount) > 0 ? (
                   <>
@@ -148,9 +157,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                     <span className="new-price">
                       ${Number(variant.final_price).toLocaleString("es-CO")}
                     </span>
-                    <div className="discount-badge">
-                      -{variant.discount_label}
-                    </div>
+                    <div className="discount-badge">-{variant.discount_label}</div>
                   </>
                 ) : (
                   <span className="normal-price">
@@ -164,12 +171,16 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                   ? product.description
                   : `${product.description.slice(0, 100)}...`}
                 {product.description.length > 100 && (
-                  <button onClick={() => setShowFullDescription(!showFullDescription)} className="ver-mas">
+                  <button
+                    onClick={() => setShowFullDescription(!showFullDescription)}
+                    className="ver-mas"
+                  >
                     {showFullDescription ? "Ver menos" : "Ver más"}
                   </button>
                 )}
               </div>
 
+              {/* Variantes */}
               <div className="modal-variants">
                 <strong>Color:</strong>
                 <div className="color-options">
@@ -178,11 +189,12 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                       key={idx}
                       onClick={() => {
                         setSelectedVariantIndex(idx);
-                        setMainImage(v.images[0]?.image || null);
+                        setMainImage(v.images?.[0]?.image || null);
                         setSelectedSize(null);
                         setQuantity(1);
                       }}
                       className={`color-button ${selectedVariantIndex === idx ? "selected" : ""}`}
+                      aria-label={`Seleccionar color ${v.color}`}
                     >
                       {v.color}
                     </button>
@@ -190,6 +202,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                 </div>
               </div>
 
+              {/* Tallas */}
               <div className="modal-sizes">
                 <strong>Tallas disponibles:</strong>
                 <div className="size-options">
@@ -201,6 +214,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                         setQuantity(1);
                       }}
                       className={`size-box ${selectedSize === s.size ? "selected" : ""}`}
+                      aria-label={`Talla ${s.size}`}
                     >
                       {s.size}
                     </button>
@@ -208,13 +222,15 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                 </div>
               </div>
 
+              {/* Cantidad */}
               <div className="modal-quantity">
                 <strong>Cantidad:</strong>
                 <div className="quantity-control">
                   <button
                     type="button"
-                    onClick={() => setQuantity(prev => Math.max(1, prev - 1))}
+                    onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                     className="qty-btn"
+                    aria-label="Disminuir cantidad"
                   >
                     &minus;
                   </button>
@@ -222,9 +238,8 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                   <button
                     type="button"
                     onClick={() => {
-                      const selectedSizeObj = sizes.find(s => s.size === selectedSize);
                       if (selectedSizeObj && quantity < selectedSizeObj.stock) {
-                        setQuantity(prev => prev + 1);
+                        setQuantity((prev) => prev + 1);
                       } else {
                         Swal.fire({
                           icon: "warning",
@@ -237,28 +252,21 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
                       }
                     }}
                     className="qty-btn"
-                    disabled={
-                      (() => {
-                        const selectedSizeObj = sizes.find(s => s.size === selectedSize);
-                        return selectedSizeObj ? quantity >= selectedSizeObj.stock : true;
-                      })()
-                    }
+                    disabled={selectedSizeObj ? quantity >= selectedSizeObj.stock : true}
+                    aria-label="Aumentar cantidad"
                   >
                     &#43;
                   </button>
                 </div>
 
-                {selectedSize && (() => {
-                  const selectedSizeObj = sizes.find(s => s.size === selectedSize);
-                  return selectedSizeObj && selectedSizeObj.stock <= 5 ? (
-                    <p className="stock-info stock-low">
-                      Quedan {selectedSizeObj.stock} disponibles
-                    </p>
-                  ) : null;
-                })()}
-
+                {selectedSizeObj && selectedSizeObj.stock <= 5 && (
+                  <p className="stock-info stock-low">
+                    Quedan {selectedSizeObj.stock} disponibles
+                  </p>
+                )}
               </div>
 
+              {/* Botón */}
               <button
                 onClick={handleAddToCart}
                 disabled={!selectedSize}
@@ -274,4 +282,4 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => { } }) => {
   );
 };
 
-export default ProductModal;
+export default memo(ProductModal);

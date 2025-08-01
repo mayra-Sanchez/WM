@@ -41,7 +41,6 @@ const ProductsByType = () => {
 
         catRes.data.forEach((cat) => {
           if (cat.id === idInt && !isSub) {
-            // Estás en categoría
             nombreActual = cat.name;
             subcats = cat.subcategories;
             const subIds = subcats.map((sub) => sub.id);
@@ -49,7 +48,6 @@ const ProductsByType = () => {
               (p) => p.category === cat.id || subIds.includes(p.category)
             );
           } else {
-            // Estás en subcategoría
             cat.subcategories.forEach((sub) => {
               if (sub.id === idInt && isSub) {
                 nombreActual = sub.name;
@@ -85,7 +83,6 @@ const ProductsByType = () => {
           {isSub ? "Subcategoría" : "Categoría"}: {nombre}
         </h2>
 
-        {/* Mostrar chips siempre que haya subcategorías */}
         {subcategorias.length > 0 && (
           <div className="subcategories-container">
             <p className="subcategories-title">Explora subcategorías:</p>
@@ -105,7 +102,6 @@ const ProductsByType = () => {
           </div>
         )}
 
-        {/* Mostrar productos de categoría madre si estás en una subcategoría */}
         {isSub && categoriaProductos.length > 0 && (
           <div className="category-parent-products">
             <p className="parent-products-title">
@@ -142,7 +138,6 @@ const ProductsByType = () => {
           </div>
         )}
 
-        {/* Mostrar productos principales de la vista actual */}
         {productos.length > 0 ? (
           <div className="product-grid">
             {productos.map((prod) => {
