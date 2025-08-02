@@ -37,7 +37,11 @@ export default function AuthLayout({ onClose }) {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -20 }}
         >
-          {activeTab === "login" ? <LoginForm /> : <RegisterForm />}
+          {activeTab === "login" ? (
+            <LoginForm onClose={onClose} />
+          ) : (
+            <RegisterForm />
+          )}
         </motion.div>
       </div>
     </div>

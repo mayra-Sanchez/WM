@@ -1,8 +1,8 @@
-// src/router/RoutesProject.jsx
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import ClientLayout from "../layout/ClientLayout";
 import AdminLayout from "../layout/AdminLayout";
+import ProtectedRoute from "./ProtectedRoute";
 
 import Home from "../pages/Home/Home";
 import AdminPanel from "../pages/Admin/AdminPanel";
@@ -14,7 +14,6 @@ const RoutesProject = () => {
   return (
     <BrowserRouter>
       <Routes>
-
         {/* Rutas cliente */}
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Home />} />
@@ -24,12 +23,13 @@ const RoutesProject = () => {
           <Route path="my-orders" element={<MyOrders />} />
         </Route>
 
-        {/* Rutas admin */}
-        <Route path="/admin" element={<AdminLayout />}>
-          <Route index element={<AdminPanel />} />
-          {/* Aquí puedes agregar más rutas admin si tienes */}
+        {/* Rutas protegidas solo para admin */}
+        <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminPanel />} />
+            {/* Agrega más rutas admin aquí */}
+          </Route>
         </Route>
-
       </Routes>
     </BrowserRouter>
   );

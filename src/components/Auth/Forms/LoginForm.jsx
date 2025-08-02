@@ -7,7 +7,7 @@ import { loginUser } from "../../../api/Auth";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../contexts/AuthContext";
 
-export function LoginForm() {
+export function LoginForm({ onClose }) {
   const navigate = useNavigate();
   const { login } = useAuth();
 
@@ -30,25 +30,23 @@ export function LoginForm() {
       Swal.fire({
         icon: "success",
         title: "¡Bienvenido!",
-        text: `Hola ${user.name || user.email}, has iniciado sesión correctamente.`,
+        text: `Hola ${
+          user.name || user.email
+        }, has iniciado sesión correctamente.`,
         confirmButtonColor: "#e63946",
+        timer: 1500,
+        showConfirmButton: false,
       }).then(() => {
-        window.location.reload();
+        if (onClose) onClose();
+        window.location.href = user.role === "admin" ? "/admin" : "/";
       });
-
-      setTimeout(() => {
-        if (user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/");
-        }
-      }, 500);
     } catch (error) {
       console.error("ERROR LOGIN", error);
       Swal.fire({
         icon: "error",
         title: "Error de autenticación",
-        text: error.response?.data?.detail || "Correo o contraseña incorrectos.",
+        text:
+          error.response?.data?.detail || "Correo o contraseña incorrectos.",
         confirmButtonColor: "#e63946",
       });
     }
@@ -68,11 +66,15 @@ export function LoginForm() {
         placeholder="Correo electrónico"
         className="auth-form-input"
       />
-      {errors.email && <p className="text-red-400 text-sm">{errors.email.message}</p>}
+      {errors.email && (
+        <p className="text-red-400 text-sm">{errors.email.message}</p>
+      )}
 
       <div className="input-wrapper">
         <input
-          {...register("password", { required: "La contraseña es obligatoria" })}
+          {...register("password", {
+            required: "La contraseña es obligatoria",
+          })}
           type={showPassword ? "text" : "password"}
           placeholder="Contraseña"
           className="auth-form-input"
@@ -81,7 +83,9 @@ export function LoginForm() {
           {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
         </span>
       </div>
-      {errors.password && <p className="text-red-400 text-sm">{errors.password.message}</p>}
+      {errors.password && (
+        <p className="text-red-400 text-sm">{errors.password.message}</p>
+      )}
 
       <button
         type="submit"
