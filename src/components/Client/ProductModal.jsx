@@ -42,6 +42,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
   const sizes = variant.sizes || [];
 
   const selectedSizeObj = sizes.find((s) => s.size === selectedSize);
+  const isOutOfStock = selectedSizeObj ? selectedSizeObj.stock <= 0 : false;
 
   const handleAddToCart = () => {
     const isLoggedIn = !!localStorage.getItem("accessToken");
@@ -57,11 +58,11 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
       });
     }
 
-    if (!selectedSizeObj) {
+    if (!selectedSizeObj || isOutOfStock) {
       return Swal.fire({
         icon: "warning",
-        title: "Selecciona una talla válida",
-        text: "Elige una talla antes de agregar al carrito.",
+        title: "Producto no disponible",
+        text: "La talla seleccionada no está disponible en este momento.",
         background: "#1e1e1e",
         color: "#fff",
         confirmButtonColor: "#e63946",
@@ -193,10 +194,14 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
                         setSelectedSize(null);
                         setQuantity(1);
                       }}
-                      className={`color-button ${selectedVariantIndex === idx ? "selected" : ""}`}
+                      className={`color-button ${selectedVariantIndex === idx ? "selected" : ""} ${
+                        v.sizes.every(s => s.stock <= 0) ? "out-of-stock" : ""
+                      }`}
                       aria-label={`Seleccionar color ${v.color}`}
+                      disabled={v.sizes.every(s => s.stock <= 0)}
                     >
                       {v.color}
+                      {v.sizes.every(s => s.stock <= 0) && " (Agotado)"}
                     </button>
                   ))}
                 </div>
@@ -213,10 +218,14 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
                         setSelectedSize(s.size);
                         setQuantity(1);
                       }}
-                      className={`size-box ${selectedSize === s.size ? "selected" : ""}`}
+                      className={`size-box ${selectedSize === s.size ? "selected" : ""} ${
+                        s.stock <= 0 ? "out-of-stock" : ""
+                      }`}
                       aria-label={`Talla ${s.size}`}
+                      disabled={s.stock <= 0}
                     >
                       {s.size}
+                      {s.stock <= 0 && " (Agotado)"}
                     </button>
                   ))}
                 </div>
@@ -231,6 +240,7 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
                     onClick={() => setQuantity((prev) => Math.max(1, prev - 1))}
                     className="qty-btn"
                     aria-label="Disminuir cantidad"
+                    disabled={isOutOfStock}
                   >
                     &minus;
                   </button>
@@ -252,16 +262,28 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
                       }
                     }}
                     className="qty-btn"
-                    disabled={selectedSizeObj ? quantity >= selectedSizeObj.stock : true}
+                    disabled={isOutOfStock || (selectedSizeObj ? quantity >= selectedSizeObj.stock : true)}
                     aria-label="Aumentar cantidad"
                   >
                     &#43;
                   </button>
                 </div>
 
-                {selectedSizeObj && selectedSizeObj.stock <= 5 && (
-                  <p className="stock-info stock-low">
-                    Quedan {selectedSizeObj.stock} disponibles
+                {selectedSizeObj && (
+                  <p className={`stock-info ${
+                    selectedSizeObj.stock <= 5 ? "stock-low" : "stock-high"
+                  }`}>
+                    {isOutOfStock ? (
+                      "AGOTADO"
+                    ) : (
+                      <>
+                        {selectedSizeObj.stock <= 5 ? (
+                          `Quedan ${selectedSizeObj.stock} disponibles`
+                        ) : (
+                          "Disponible"
+                        )}
+                      </>
+                    )}
                   </p>
                 )}
               </div>
@@ -269,10 +291,10 @@ const ProductModal = ({ product, isOpen, onClose, addToCart = () => {} }) => {
               {/* Botón */}
               <button
                 onClick={handleAddToCart}
-                disabled={!selectedSize}
-                className="add-to-cart"
+                disabled={!selectedSize || isOutOfStock}
+                className={`add-to-cart ${isOutOfStock ? "out-of-stock-btn" : ""}`}
               >
-                Agregar al carrito
+                {isOutOfStock ? "AGOTADO" : "Agregar al carrito"}
               </button>
             </div>
           </motion.div>

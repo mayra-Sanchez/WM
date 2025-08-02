@@ -1,10 +1,9 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useCallback } from "react";
 import axios from "axios";
 import ProductModal from "./ProductModal";
 import "./ProductCarousel.css";
-import { FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useWishlist } from "../../contexts/WishlistContext";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./Common/ProductCard";
 
@@ -14,7 +13,6 @@ const ProductCarousel = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const carouselRefs = useRef({});
-
   const { wishlist, add, remove } = useWishlist();
   const navigate = useNavigate();
 
@@ -23,7 +21,7 @@ const ProductCarousel = () => {
       try {
         const [catRes, prodRes] = await Promise.all([
           axios.get("https://wmsiteweb.xyz/products/api/categories/"),
-          axios.get("https://wmsiteweb.xyz/products/api/products"),
+          axios.get("https://wmsiteweb.xyz/products/api/products")
         ]);
 
         const categoriasPrincipales = catRes.data.filter(cat => cat.parent === null);
@@ -35,7 +33,10 @@ const ProductCarousel = () => {
             (p) => p.category === cat.id || subIds.includes(p.category)
           );
           if (productos.length > 0) {
-            agrupados[cat.name] = { productos, id: cat.id };
+            agrupados[cat.name] = {
+              productos: productos.slice(0, 8), // Limitar productos visibles
+              id: cat.id
+            };
           }
         });
 
@@ -56,16 +57,10 @@ const ProductCarousel = () => {
         scrollCarousel(categoria, "right");
       });
     }, 8000);
-
     return () => clearInterval(autoplay);
   }, []);
 
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-    setModalOpen(true);
-  };
-
-  const scrollCarousel = (categoria, direction) => {
+  const scrollCarousel = useCallback((categoria, direction) => {
     const scrollAmount = 300;
     const ref = carouselRefs.current[categoria];
     if (!ref) return;
@@ -73,19 +68,28 @@ const ProductCarousel = () => {
       left: direction === "left" ? -scrollAmount : scrollAmount,
       behavior: "smooth",
     });
-  };
+  }, []);
 
-  const isInWishlist = (productId) => wishlist.some(item => item.product === productId);
+  const isInWishlist = useCallback(
+    (productId) => wishlist.some((item) => item.product === productId),
+    [wishlist]
+  );
 
-  const getDiscountedVariant = (variants) => {
-    return variants.find(variant => parseFloat(variant.discount) > 0) || variants[0];
-  };
+  const handleProductClick = useCallback((product) => {
+    setSelectedProduct(product);
+    setModalOpen(true);
+  }, []);
+
+  const getDiscountedVariant = (variants) =>
+    variants.find((v) => parseFloat(v.discount) > 0) || variants[0];
 
   return (
     <div className="carousels-container">
       {loading ? (
         <div className="carousel-wrapper">
-          <div className="carousel-header"><div className="carousel-title">Cargando...</div></div>
+          <div className="carousel-header">
+            <div className="carousel-title">Cargando...</div>
+          </div>
           <div className="carousel">
             {[...Array(4)].map((_, idx) => (
               <div className="skeleton-card" key={idx}>
@@ -110,13 +114,18 @@ const ProductCarousel = () => {
                 Ver más
               </button>
             </div>
-
             <div className="carousel-container">
-              <button className="arrow left" onClick={() => scrollCarousel(categoria, "left")}>
+              <button
+                className="arrow left"
+                onClick={() => scrollCarousel(categoria, "left")}
+              >
                 <FaChevronLeft />
               </button>
 
-              <div className="carousel" ref={(el) => (carouselRefs.current[categoria] = el)}>
+              <div
+                className="carousel"
+                ref={(el) => (carouselRefs.current[categoria] = el)}
+              >
                 {productos.map((prod) => {
                   const variant = getDiscountedVariant(prod.variants);
                   return (
@@ -135,7 +144,10 @@ const ProductCarousel = () => {
                 })}
               </div>
 
-              <button className="arrow right" onClick={() => scrollCarousel(categoria, "right")}>
+              <button
+                className="arrow right"
+                onClick={() => scrollCarousel(categoria, "right")}
+              >
                 <FaChevronRight />
               </button>
             </div>
