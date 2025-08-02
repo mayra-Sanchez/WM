@@ -19,17 +19,6 @@ const ProductCard = ({ product, variant, isInWishlist, onToggleWishlist, onClick
     }
   }, [currentImageIndex, images]);
 
-  // Auto-slide images when not hovered
-  useEffect(() => {
-    if (images.length <= 1 || isHovered) return;
-
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
-    }, 4000);
-
-    return () => clearInterval(interval);
-  }, [images.length, isHovered]);
-
   const handlePrev = (e) => {
     e.stopPropagation();
     setCurrentImageIndex((prev) => (prev - 1 + images.length) % images.length);
