@@ -66,9 +66,15 @@ const OrderSummary = () => {
       await Swal.fire({
         icon: "success",
         title: "¡Pedido realizado!",
-        text: "Tu orden ha sido registrada con éxito.",
-        confirmButtonText: "Ver mis pedidos",
+        html: `
+    <p>Tu orden ha sido registrada con éxito.</p>
+    <p><strong>Recuerda:</strong> Debes realizar el pago según los métodos indicados en <strong>Mis pedidos</strong>.</p>
+    <p>Si no realizas el pago en los próximos <strong>5 días hábiles</strong>, tu pedido será cancelado automáticamente.</p>
+  `,
+        confirmButtonText: "Entendido, ver mis pedidos",
+        confirmButtonColor: "#28a745",
       });
+
 
       navigate("/my-orders");
     } catch (error) {
@@ -155,9 +161,8 @@ const OrderSummary = () => {
           >
             {loading
               ? "Procesando..."
-              : `Confirmar y pagar $${totalConEnvio.toLocaleString()} ${
-                  envio === 0 ? "(Envío gratis)" : ""
-                }`}
+              : `Confirmar y pagar $${totalConEnvio.toLocaleString()} ${envio === 0 ? "(Envío gratis)" : ""
+              }`}
           </button>
         </div>
 

@@ -1,7 +1,5 @@
 import { useEffect, useState, useCallback, useMemo } from "react";
 import axios from "axios";
-import Footer from "../Footer/Footer";
-import Navbar from "../Navbar/Navbar";
 import { getOrders, updateOrderStatus } from "../../api/Orders";
 import Swal from "sweetalert2";
 import {
@@ -20,7 +18,7 @@ import {
   FiRefreshCw,
   FiMessageSquare,
   FiUpload,
-  FiSmartphone ,
+  FiSmartphone,
   FiX,
   FiCreditCard
 } from "react-icons/fi";
@@ -214,7 +212,6 @@ const MyOrders = () => {
             <p>Cargando tus pedidos...</p>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
@@ -222,7 +219,6 @@ const MyOrders = () => {
   if (error) {
     return (
       <>
-        <Navbar />
         <div className="my-orders-wrapper">
           <div className="error-message">
             <FiAlertCircle size={48} />
@@ -232,14 +228,12 @@ const MyOrders = () => {
             </button>
           </div>
         </div>
-        <Footer />
       </>
     );
   }
 
   return (
     <>
-      <Navbar />
       <div className="my-orders-wrapper">
         <div className="orders-section-header">
           <div className="orders-title-section">
@@ -355,7 +349,6 @@ const MyOrders = () => {
           </>
         )}
       </div>
-      <Footer />
     </>
   );
 };
@@ -391,19 +384,19 @@ const OrderCard = ({
 
   const handlePaymentConfirmation = () => {
     const phoneNumber = "573106366464"; // Tu número de WhatsApp
-    const paymentMethod = 
-      activePaymentTab === 'transfer' ? 'Transferencia Bancaria' : 
-      activePaymentTab === 'nequi' ? 'Nequi' : 'Efectivo';
-    
+    const paymentMethod =
+      activePaymentTab === 'transfer' ? 'Transferencia Bancaria' :
+        activePaymentTab === 'nequi' ? 'Nequi' : 'Efectivo';
+
     const message = `*Confirmación de Pago - Pedido #${order.id}*\n\n` +
-                   `*Cliente:* ${order.user_name || 'No especificado'}\n` +
-                   `*Método de Pago:* ${paymentMethod}\n` +
-                   `*Total Pagado:* ${orderTotal}\n` +
-                   `*Fecha:* ${new Date().toLocaleDateString('es-ES')}\n\n` +
-                   `Por favor confirma la recepción de este pago.`;
+      `*Cliente:* ${order.customer_email || 'No especificado'}\n` +
+      `*Método de Pago:* ${paymentMethod}\n` +
+      `*Total Pagado:* ${orderTotal}\n` +
+      `*Fecha:* ${new Date().toLocaleDateString('es-ES')}\n\n` +
+      `Por favor confirma la recepción de este pago.`;
 
     window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`, '_blank');
-    
+
     Swal.fire({
       title: '¡Listo para confirmar!',
       html: `<div style="text-align: left;">
@@ -417,12 +410,12 @@ const OrderCard = ({
       icon: 'info',
       confirmButtonText: 'Entendido'
     });
-    
+
     setShowPaymentModal(false);
   };
 
   const PaymentMethodOption = ({ id, icon, title, details }) => (
-    <div 
+    <div
       className={`payment-option ${activePaymentTab === id ? 'active' : ''}`}
       onClick={() => setActivePaymentTab(id)}
     >
@@ -561,13 +554,18 @@ const OrderCard = ({
 
         <div className="order-actions">
           {order.status === "PENDING" && (
-            <button
-              onClick={() => setShowPaymentModal(true)}
-              className="payment-methods-button"
-              aria-label="Métodos de pago"
-            >
-              <FiDollarSign /> Métodos de pago
-            </button>
+            <div className="payment-section">
+              <p className="payment-info">
+                Tu pedido está pendiente de pago. Haz clic en <strong>“Métodos de pago”</strong> para completarlo y asegurar tu compra.
+              </p>
+              <button
+                onClick={() => setShowPaymentModal(true)}
+                className="payment-methods-button"
+                aria-label="Métodos de pago"
+              >
+                <FiDollarSign /> Métodos de pago
+              </button>
+            </div>
           )}
 
           {canBeCancelled(order.status) && (
@@ -588,10 +586,10 @@ const OrderCard = ({
             <button className="close-modal-button" onClick={() => setShowPaymentModal(false)}>
               <FiX />
             </button>
-            
+
             <h3>Confirmar pago del pedido #{order.id}</h3>
             <p className="order-total-modal">Total a pagar: {orderTotal}</p>
-            
+
             <div className="payment-options">
               <PaymentMethodOption
                 id="transfer"
@@ -605,7 +603,7 @@ const OrderCard = ({
                   </div>
                 }
               />
-              
+
               <PaymentMethodOption
                 id="nequi"
                 icon={<FiSmartphone />}
@@ -619,7 +617,7 @@ const OrderCard = ({
                   </div>
                 }
               />
-              
+
               <PaymentMethodOption
                 id="cash"
                 icon={<FiDollarSign />}
@@ -634,7 +632,7 @@ const OrderCard = ({
                 }
               />
             </div>
-            
+
             <div className="modal-actions">
               <button
                 onClick={handlePaymentConfirmation}
