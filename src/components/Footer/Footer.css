@@ -4,7 +4,6 @@
   background-color: #1a1a1a;
   color: #ffffff;
   padding: 3rem 2rem 1rem;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .footer-container {
@@ -18,9 +17,9 @@
 
 .footer-title {
   font-size: 1.2rem;
-  font-weight: 600;
   margin-bottom: 1.5rem;
-  color: #e63946;
+  color: #836f6f;
+  font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 1px;
 }
