@@ -37,7 +37,7 @@ const ProductDetail = () => {
         let mounted = true;
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`http://127.0.0.1:8000/products/api/products/${id}/`);
+                const { data } = await axios.get(`https://wmsiteweb.xyz/products/api/products/${id}/`);
                 if (mounted) setProduct(data);
             } catch (e) {
                 console.error(e);

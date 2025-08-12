@@ -47,7 +47,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/products/api/categories/");
+        const response = await axios.get("https://wmsiteweb.xyz/products/api/categories/");
         setCategorias(response.data);
       } catch (error) {
         console.error("Error al obtener categorías:", error);
@@ -74,7 +74,7 @@ const Navbar = () => {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/products/api/products/");
+        const response = await axios.get("https://wmsiteweb.xyz/products/api/products/");
         setProductos(response.data);
       } catch (error) {
         console.error("Error al obtener productos:", error);

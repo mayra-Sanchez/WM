@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const categoriesApi = axios.create({
-    baseURL: 'http://127.0.0.1:8000/products/api/categories',
+    baseURL: 'https://wmsiteweb.xyz/products/api/categories',
 });
 
 export const getCategories = () => categoriesApi.get('/');

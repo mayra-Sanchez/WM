@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const wishlistApi = axios.create({
-  baseURL: "http://127.0.0.1:8000/wishlist/api/wishlist/",
+  baseURL: "https://wmsiteweb.xyz/wishlist/api/wishlist/",
 });
 
 const getAuthHeaders = () => {
