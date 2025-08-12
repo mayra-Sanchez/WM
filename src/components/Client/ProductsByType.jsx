@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "./Common/ProductCard";
 import { useWishlist } from "../../contexts/WishlistContext";
-import ProductModal from "./ProductModal";
 import "./ProductsByType.css";
 
 const ProductsByType = () => {
@@ -16,14 +15,14 @@ const ProductsByType = () => {
   const [subcategorias, setSubcategorias] = useState([]);
   const [categoriaProductos, setCategoriaProductos] = useState([]);
   const [visibleCatProds, setVisibleCatProds] = useState(4);
-  const [selectedProduct, setSelectedProduct] = useState(null);
   const { wishlist, add, remove } = useWishlist();
 
   const isSub = location.pathname.includes("/subcategoria/");
 
+  // Scroll al inicio cada vez que cambie id
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [id]);
+    window.scrollTo({ top: 0, behavior: "instant" });
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -77,70 +76,35 @@ const ProductsByType = () => {
   };
 
   return (
-    <>
-      <main className="products-container">
-        <h2 className="category-title">
-          {isSub ? "Subcategoría" : "Categoría"}: {nombre}
-        </h2>
+    <main className="products-container">
+      <h2 className="category-title">
+        {isSub ? "Subcategoría" : "Categoría"}: {nombre}
+      </h2>
 
-        {subcategorias.length > 0 && (
-          <div className="subcategories-container">
-            <p className="subcategories-title">Explora subcategorías:</p>
-            <div className="subcategories-chips">
-              {subcategorias.map((sub) => (
-                <button
-                  key={sub.id}
-                  className={`subcategory-chip ${
-                    parseInt(id) === sub.id ? "active" : ""
-                  }`}
-                  onClick={() => navigate(`/subcategoria/${sub.id}`)}
-                >
-                  {sub.name}
-                </button>
-              ))}
-            </div>
+      {subcategorias.length > 0 && (
+        <div className="subcategories-container">
+          <p className="subcategories-title">Explora subcategorías:</p>
+          <div className="subcategories-chips">
+            {subcategorias.map((sub) => (
+              <button
+                key={sub.id}
+                className={`subcategory-chip ${parseInt(id) === sub.id ? "active" : ""}`}
+                onClick={() => navigate(`/subcategoria/${sub.id}`)}
+              >
+                {sub.name}
+              </button>
+            ))}
           </div>
-        )}
+        </div>
+      )}
 
-        {isSub && categoriaProductos.length > 0 && (
-          <div className="category-parent-products">
-            <p className="parent-products-title">
-              También puedes estar interesad@ en productos de la categoría:
-            </p>
-            <div className="product-grid">
-              {categoriaProductos.slice(0, visibleCatProds).map((prod) => {
-                const variant = getDiscountedVariant(prod.variants);
-                return (
-                  <ProductCard
-                    key={prod.id}
-                    product={prod}
-                    variant={variant}
-                    isInWishlist={wishlist.some((item) => item.product === prod.id)}
-                    onToggleWishlist={(id) => {
-                      const item = wishlist.find((i) => i.product === id);
-                      item ? remove(item.id) : add(id);
-                    }}
-                    onClick={() => setSelectedProduct(prod)}
-                  />
-                );
-              })}
-            </div>
-            {categoriaProductos.length > visibleCatProds && (
-              <div className="centered-button">
-                <button
-                  className="load-more-btn"
-                  onClick={() => setVisibleCatProds((prev) => prev + 4)}
-                >
-                  Ver más
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {productos.length > 0 ? (
+      {isSub && categoriaProductos.length > 0 && (
+        <div className="category-parent-products">
+          <p className="parent-products-title">
+            También puedes estar interesad@ en productos de la categoría:
+          </p>
           <div className="product-grid">
-            {productos.map((prod) => {
+            {categoriaProductos.slice(0, visibleCatProds).map((prod) => {
               const variant = getDiscountedVariant(prod.variants);
               return (
                 <ProductCard
@@ -152,22 +116,47 @@ const ProductsByType = () => {
                     const item = wishlist.find((i) => i.product === id);
                     item ? remove(item.id) : add(id);
                   }}
-                  onClick={() => setSelectedProduct(prod)}
+                  onClick={() => navigate(`/product/${prod.id}`, { state: { product: prod } })}
                 />
               );
             })}
           </div>
-        ) : (
-          <p>No hay productos en esta {isSub ? "subcategoría" : "categoría"}.</p>
-        )}
-      </main>
+          {categoriaProductos.length > visibleCatProds && (
+            <div className="centered-button">
+              <button
+                className="load-more-btn"
+                onClick={() => setVisibleCatProds((prev) => prev + 4)}
+              >
+                Ver más
+              </button>
+            </div>
+          )}
+        </div>
+      )}
 
-      <ProductModal
-        product={selectedProduct}
-        isOpen={!!selectedProduct}
-        onClose={() => setSelectedProduct(null)}
-      />
-    </>
+      {productos.length > 0 ? (
+        <div className="product-grid">
+          {productos.map((prod) => {
+            const variant = getDiscountedVariant(prod.variants);
+            return (
+              <ProductCard
+                key={prod.id}
+                product={prod}
+                variant={variant}
+                isInWishlist={wishlist.some((item) => item.product === prod.id)}
+                onToggleWishlist={(id) => {
+                  const item = wishlist.find((i) => i.product === id);
+                  item ? remove(item.id) : add(id);
+                }}
+                onClick={() => navigate(`/product/${prod.id}`, { state: { product: prod } })}
+              />
+            );
+          })}
+        </div>
+      ) : (
+        <p>No hay productos en esta {isSub ? "subcategoría" : "categoría"}.</p>
+      )}
+    </main>
   );
 };
 
