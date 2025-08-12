@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const authApi = axios.create({
-    baseURL: 'https://wmsiteweb.xyz/users/api/',
+    baseURL: 'http://127.0.0.1:8000/users/api/',
 });
 
 export const registerUser = (userData) => authApi.post('register/', userData);

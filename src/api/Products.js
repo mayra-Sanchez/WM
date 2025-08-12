@@ -1,11 +1,11 @@
 import axios from 'axios';
 
 const productsApi = axios.create({
-    baseURL: 'https://wmsiteweb.xyz/products/api/products',
+    baseURL: 'http://127.0.0.1:8000/products/api/products',
 });
 
 const imageApi = axios.create({
-  baseURL: 'https://wmsiteweb.xyz/products/api'
+  baseURL: 'http://127.0.0.1:8000/products/api'
 });
 
 export const getProducts = () => productsApi.get('/');

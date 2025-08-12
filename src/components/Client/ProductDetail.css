@@ -1,0 +1,216 @@
+body {
+    background-color: #fff;
+}
+
+.pd-container { 
+    max-width: 1200px; 
+    margin: 120px auto; 
+    padding: 16px;
+}
+
+.pd-breadcrumbs { 
+    display: flex; 
+    gap: 12px; 
+    align-items: center; 
+    margin-bottom: 12px; 
+}
+
+.pd-back { 
+    background: transparent; 
+    border: none; 
+    cursor: pointer; 
+    font-size: 14px; 
+    opacity: .8; 
+}
+
+.pd-grid { 
+    display: grid; 
+    grid-template-columns: 1.2fr 1fr; 
+    gap: 50px; 
+}
+
+.pd-main-img img { 
+    width: 80%; 
+    height: auto; 
+    border-radius: 14px; 
+}
+
+.pd-discount-badge, 
+.pd-chip { 
+    background: #e63946; 
+    color: #fff; 
+    border-radius: 999px; 
+    padding: 4px 10px; 
+    font-size: 12px; 
+}
+
+.pd-gallery { 
+    display: flex; 
+    gap: 10px; 
+    margin-top: 12px; 
+    flex-wrap: wrap; 
+}
+
+.pd-thumb { 
+    width: 72px; 
+    height: 72px; 
+    object-fit: cover; 
+    border-radius: 10px; 
+    opacity: .85; 
+    cursor: pointer; 
+    border: 2px solid transparent; 
+}
+
+.pd-thumb.active { 
+    opacity: 1; 
+    border-color: #e63946; 
+}
+
+.pd-title { 
+    font-size: 24px; 
+    margin: 0 0 12px; 
+}
+
+.pd-price { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    margin: 12px 0 16px; 
+}
+
+.pd-old { 
+    text-decoration: line-through; 
+    opacity: .6; 
+}
+
+.pd-new, 
+.pd-normal { 
+    font-size: 22px; 
+    font-weight: 700; 
+}
+
+.pd-description { 
+    color: #444; 
+    line-height: 1.5; 
+    margin-bottom: 14px; 
+}
+
+.pd-see-more { 
+    border: none; 
+    background: transparent; 
+    color: #e63946; 
+    margin-left: 6px; 
+    cursor: pointer; 
+}
+
+.pd-variants,
+.pd-sizes,
+.pd-qty {
+    margin-top: 20px; 
+}
+
+
+.pd-color-options, 
+.pd-size-options { 
+    display: flex; 
+    gap: 8px; 
+    flex-wrap: wrap; 
+    margin-top: 20px; 
+}
+
+.pd-qty-ctrl {
+    margin-top: 10px; 
+}
+
+.pd-color-btn, 
+.pd-size { 
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    margin-top: 0px;
+    padding: 8px 12px; 
+    background: #fff; 
+    cursor: pointer; 
+}
+
+.pd-color-btn.selected, 
+.pd-size.selected { 
+    border-color: #e63946; 
+}
+
+.pd-size.out { 
+    opacity: .5; 
+    cursor: not-allowed; 
+}
+
+.pd-qty-ctrl { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+    margin-top: 6px; 
+}
+
+.pd-qty-btn { 
+    width: 36px; 
+    height: 36px; 
+    border-radius: 8px; 
+    border: 1px solid #ddd; 
+    background: #fff; 
+    cursor: pointer; 
+}
+
+.pd-qty-val { 
+    min-width: 28px; 
+    text-align: center; 
+    display: inline-block; 
+}
+
+.pd-stock.low { 
+    color: #b7791f; 
+}
+
+.pd-stock.out { 
+    color: #e63946; 
+}
+
+.pd-actions { 
+    margin-top: 16px; 
+}
+
+.pd-add { 
+    background: #111; 
+    color: #fff; 
+    padding: 12px 16px; 
+    border: none; 
+    border-radius: 12px; 
+    cursor: pointer; 
+}
+
+.pd-skeleton { 
+    display: grid; 
+    grid-template-columns: 1.2fr 1fr; 
+    gap: 24px; 
+}
+
+.pd-skel-img { 
+    height: 420px; 
+    background: #eee; 
+    border-radius: 14px; 
+}
+
+.pd-skel-info .pd-skel-line { 
+    height: 18px; 
+    background: #eee; 
+    margin-bottom: 10px; 
+    border-radius: 8px; 
+}
+
+.pd-skel-info .pd-skel-line.short { 
+    width: 60%; 
+}
+
+@media (max-width: 900px) {
+    .pd-grid, 
+    .pd-skeleton { 
+        grid-template-columns: 1fr; 
+    }
+}

@@ -1,17 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import ProductModal from "./ProductModal";
 import "./ProductCarousel.css";
 import { FaChevronLeft, FaChevronRight, FaHeart, FaRegHeart } from "react-icons/fa";
 import { useWishlist } from "../../contexts/WishlistContext";
-import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
 import ProductCard from "./Common/ProductCard";
 
 const ProductCarousel = () => {
   const [agrupadosPorCategoria, setAgrupadosPorCategoria] = useState({});
-  const [selectedProduct, setSelectedProduct] = useState(null);
-  const [modalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const carouselRefs = useRef({});
 
@@ -22,8 +18,8 @@ const ProductCarousel = () => {
     const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          axios.get("https://wmsiteweb.xyz/products/api/categories/"),
-          axios.get("https://wmsiteweb.xyz/products/api/products"),
+          axios.get("http://127.0.0.1:8000/products/api/categories/"),
+          axios.get("http://127.0.0.1:8000/products/api/products"),
         ]);
 
         const categoriasPrincipales = catRes.data.filter(cat => cat.parent === null);
@@ -60,9 +56,16 @@ const ProductCarousel = () => {
     return () => clearInterval(autoplay);
   }, []);
 
-  const handleProductClick = (product) => {
-    setSelectedProduct(product);
-    setModalOpen(true);
+  const handleProductClick = (prod) => {
+    const slugify = (text) =>
+      text
+        .toLowerCase()
+        .normalize("NFD") 
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+
+    navigate(`/product/${prod.id}-${slugify(prod.name)}`, { state: { product: prod } });
   };
 
   const scrollCarousel = (categoria, direction) => {
@@ -142,12 +145,6 @@ const ProductCarousel = () => {
           </div>
         ))
       )}
-
-      <ProductModal
-        product={selectedProduct}
-        isOpen={modalOpen}
-        onClose={() => setModalOpen(false)}
-      />
     </div>
   );
 };

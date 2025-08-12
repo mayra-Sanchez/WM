@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const ordersApi = axios.create({
-  baseURL: "https://wmsiteweb.xyz/orders/api/orders/",
+  baseURL: "http://127.0.0.1:8000/orders/api/orders/",
 });
 
 const getAuthHeaders = () => {
