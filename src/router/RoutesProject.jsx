@@ -9,6 +9,7 @@ import AdminPanel from "../pages/Admin/AdminPanel";
 import ProductsByType from "../components/Client/ProductsByType";
 import Checkout from "../components/Checkout/Checkout";
 import MyOrders from "../components/MyOrders/MyOrders";
+import ProductDetail from "../components/Client/ProductDetail";
 
 const RoutesProject = () => {
   return (
@@ -17,6 +18,7 @@ const RoutesProject = () => {
         {/* Rutas cliente */}
         <Route path="/" element={<ClientLayout />}>
           <Route index element={<Home />} />
+          <Route path="product/:idSlug" element={<ProductDetail />} />
           <Route path="categoria/:id" element={<ProductsByType />} />
           <Route path="subcategoria/:id" element={<ProductsByType />} />
           <Route path="checkout" element={<Checkout />} />
