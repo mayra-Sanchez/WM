@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const reportsApi = axios.create({
-    baseURL: "https://wmsiteweb.xyz/reports/",
+    baseURL: `${baseURL}/reports/`,
 })
 
 const getAuthHeaders = () => {

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const categoriesApi = axios.create({
-    baseURL: 'https://wmsiteweb.xyz/products/api/categories',
+    baseURL: `${baseURL}/products/api/categories`,
 });
 
 export const getCategories = () => categoriesApi.get('/');

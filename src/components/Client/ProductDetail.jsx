@@ -37,7 +37,7 @@ const ProductDetail = () => {
         let mounted = true;
         const fetchProduct = async () => {
             try {
-                const { data } = await axios.get(`https://wmsiteweb.xyz/products/api/products/${id}/`);
+                const { data } = await axios.get(`https://wm-backend-mnof.onrender.com/products/api/products/${id}/`);
                 if (mounted) setProduct(data);
             } catch (e) {
                 console.error(e);

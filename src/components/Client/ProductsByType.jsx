@@ -28,8 +28,8 @@ const ProductsByType = () => {
     const fetchData = async () => {
       try {
         const [catRes, prodRes] = await Promise.all([
-          axios.get("https://wmsiteweb.xyz/products/api/categories/"),
-          axios.get("https://wmsiteweb.xyz/products/api/products/"),
+          axios.get("https://wm-backend-mnof.onrender.com/products/api/categories/"),
+          axios.get("https://wm-backend-mnof.onrender.com/products/api/products/"),
         ]);
 
         const idInt = parseInt(id);

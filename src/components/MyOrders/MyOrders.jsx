@@ -70,7 +70,7 @@ const MyOrders = () => {
       setError(null);
       const [ordersRes, imagesRes] = await Promise.all([
         getOrders(),
-        axios.get("https://wmsiteweb.xyz/products/api/images/"),
+        axios.get("https://wm-backend-mnof.onrender.com/products/api/images/"),
       ]);
       setOrders(ordersRes.data);
       setAllImages(imagesRes.data);

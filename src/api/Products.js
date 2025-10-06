@@ -1,11 +1,13 @@
 import axios from 'axios';
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const productsApi = axios.create({
-    baseURL: 'https://wmsiteweb.xyz/products/api/products',
+    baseURL: `${baseURL}/products/api/products`,
 });
 
 const imageApi = axios.create({
-  baseURL: 'https://wmsiteweb.xyz/products/api'
+  baseURL: `${baseURL}/products/api`
 });
 
 export const getProducts = () => productsApi.get('/');

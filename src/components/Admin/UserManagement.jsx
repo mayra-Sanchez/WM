@@ -37,7 +37,7 @@ const UserManagement = () => {
   const fetchUsers = useCallback(async () => {
     setLoading(true);
     try {
-      const res = await axios.get("https://wmsiteweb.xyz/users/api/users/", {
+      const res = await axios.get("https://wm-backend-mnof.onrender.com/users/api/users/", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -120,7 +120,7 @@ const UserManagement = () => {
   const confirmRoleChange = async () => {
     try {
       await axios.patch(
-        `https://wmsiteweb.xyz/users/api/users/${selectedUser.id}/`,
+        `https://wm-backend-mnof.onrender.com/users/api/users/${selectedUser.id}/`,
         { role: selectedUser.newRole },
         {
           headers: {

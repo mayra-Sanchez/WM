@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const wishlistApi = axios.create({
-  baseURL: "https://wmsiteweb.xyz/wishlist/api/wishlist/",
+  baseURL: `${baseURL}/wishlist/api/wishlist/`,
 });
 
 const getAuthHeaders = () => {

@@ -1,7 +1,9 @@
 import axios from "axios";
 
+const baseURL = import.meta.env.VITE_API_URL;
+
 const cartApi = axios.create({
-    baseURL: 'https://wmsiteweb.xyz/cart/api/',
+    baseURL: `${baseURL}/cart/api/`,
 });
 
 const getAuthHeaders = () => {
